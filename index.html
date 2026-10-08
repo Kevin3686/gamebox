@@ -204,8 +204,25 @@ const BASES = [
 
 /* Catalog: "Name|file". Section headers start with ##. */
 const RAW = `
+## Confirmed Working
+8 Ball Classic|cl8ballclassic.html
+10 Bullets|cl10bullets.html
+Fnaf 1|clFNAF.html
+Fnaf 2|clFNAF2.html
+Fnaf 3|clFNAF3.html
+Fnaf 4|clFNAF4.html
+Age of War|clageofwar.html
+Age of War 2|clageofwar2.html
+Awesome Tanks|clawesometanks.html
+Awesome Tanks 2|clawesometanks2.html
+Baldi's Basics|clbaldisbasics.html
+Deltarune|cldeltarune.html
+Doki Doki Literature Club|cldokidokiliteratureclub.html
+Drift Boss|cldriftboss.html
+Brotato|clbrotato.html
+
+
 ## Games
-10 Minutes Till Dawn|cl10minutestildawn.html
 12 Mini Battles|cl12minibattles.html
 1v1.lol|cl1v1lol.html
 2048|cl2048.html
@@ -219,7 +236,6 @@ const RAW = `
 3D Pinball Space Cadet|cl3dpinballspacecadet.html
 4th And Goal|cl4thandgoal.html
 500 Caliber Contractz|cl500calibercontractz.html
-8 Ball Classic|cl8ballclassic.html
 9007199254740992|cl9007199254740992.html
 99 Balls|cl99balls.html
 99 Nights In The Forest|cl99nightsitf.html
@@ -1459,7 +1475,7 @@ Angry Birds Space|clangry-birdsspace.html
 Apple Shooter|clappleshooter.html
 Apple Worm|clappleworm.html
 
-##Retro
+## Retro
 Donkey Kong|cldonkeykong.html
 Marvel Superheroes Arcade|clMarvelSuperHeroesArcade.html
 Simpsons Arcade|clsimpsonsarcade.html
@@ -1516,7 +1532,7 @@ const sfx={tick:()=>{const n=performance.now();if(n-lastTick<45)return;lastTick=
 
 /* ---------- generated cover art (cached) ---------- */
 const MO=[[/angry|bird|chick|duck|penguin|flappy/i,'🐦'],[/craft|mine|block/i,'⛏️'],[/basket|dunk|hoop/i,'🏀'],[/soccer|football|goal|cup|fifa|penalty/i,'⚽'],[/car|race|racing|drift|moto|drive|rally|truck|parking|bike/i,'🏎️'],[/run|dash|jump|parkour|subway/i,'🏃'],[/zombie|dead|horror|night|backroom|nightmare|fnaf|baldi|scary|evil|death|dark/i,'🧟'],[/space|sky|alien|galaxy|star|rocket|planet|moon/i,'🚀'],[/shoot|gun|sniper|war|battle|strike|caliber|army|shell|tank/i,'🔫'],[/pool|pinball|8 ball|billiard/i,'🎱'],[/2048|puzzle|maze|tetris|chess|sudoku|word|match|solitaire|mahjong/i,'🧩'],[/tycoon|idle|clicker|capital|cookie|money|empire|bank/i,'💰'],[/tower|defen[cs]e|castle|kingdom/i,'🏰'],[/fish|ocean|aqua|water|swim|sea|shark/i,'🐟'],[/cat|dog|pig|panda|bear|frog|animal|bunny|monkey|pet/i,'🐾'],[/fire|burn|dragon|lava|bomb/i,'🐉'],[/ninja|sword|fight|knife|samurai|kick|box|ball/i,'⚔️'],[/golf/i,'⛳'],[/ski|snow|ice|winter|cold/i,'❄️'],[/farm|plant|garden|apple|fruit|cook|pizza|burger|cake|food/i,'🌱'],[/escape|room|mystery|detective|crime|police/i,'🔦'],[/music|dance|beat|rhythm|piano|guitar/i,'🎵'],[/fnf|funkin|friday/i,'🎤']];
-const CE={Eaglercraft:'⛏️',FNF:'🎤',Flash:'🎞️',Games:'🎮'},cache=new Map();
+const CE={Eaglercraft:'⛏️',FNF:'🎤',Flash:'🎞️',Retro:'🕹️','Confirmed Working':'✅',Games:'🎮'},cache=new Map();
 function initials(n){const w=n.replace(/[^A-Za-z0-9 ]/g,'').split(/\s+/).filter(Boolean);return((w[0]||'?')[0]+((w[1]||'')[0]||'')).toUpperCase()}
 const IMG={/* 'Game name':'https://example.com/cover.jpg', */};
 function titleSvg(name){const ws=name.trim().split(/\s+/);let ls=[],c='';for(const w of ws){if(!c)c=w;else if((c+' '+w).length<=11)c+=' '+w;else{ls.push(c);c=w}}if(c)ls.push(c);ls=ls.flatMap(l=>l.length>13?l.match(/.{1,11}/g):[l]);if(ls.length>5){ls=ls.slice(0,5);ls[4]=ls[4].slice(0,9)+'…'}
@@ -1607,7 +1623,7 @@ addEventListener('resize',()=>{document.documentElement.style.setProperty('--sw'
 
 /* ---------- favorites, folders, nav ---------- */
 function toggleFav(g){const i=S.favs.indexOf(g.id);i<0?S.favs.push(g.id):S.favs.splice(i,1);save();sfx.tog();if(view.cat==='Favorites')refresh()}
-function buildNav(){const n=$('nav');n.innerHTML='';[['All','🏠 Home'],['Favorites','★ Favorites'],['Games','🎮 Games'],['Eaglercraft','⛏️ Eaglercraft'],['FNF','🎤 FNF'],['Flash','🎞️ Flash'],...S.folders.map(f=>[f.id,'📁 '+f.name])].forEach(([k,t])=>{const b=el('button','tb'+(view.cat===k?' on':''));b.textContent=t;b.onclick=()=>{view.cat=k;sfx.tog();buildNav();refresh()};n.append(b)})}
+function buildNav(){const n=$('nav');n.innerHTML='';[['All','🏠 Home'],['Favorites','★ Favorites'],['Confirmed Working','✅ Confirmed Working'],['Games','🎮 Games'],['Eaglercraft','⛏️ Eaglercraft'],['FNF','🎤 FNF'],['Flash','🎞️ Flash'],['Retro','🕹️ Retro'],...S.folders.map(f=>[f.id,'📁 '+f.name])].forEach(([k,t])=>{const b=el('button','tb'+(view.cat===k?' on':''));b.textContent=t;b.onclick=()=>{view.cat=k;sfx.tog();buildNav();refresh()};n.append(b)})}
 function newFolder(name){name=name.trim();if(!name)return null;const f={id:'f'+Date.now().toString(36)+Math.random().toString(36).slice(2,4),name:name.slice(0,30),ids:[]};S.folders.push(f);save();buildNav();return f}
 function pick(g){const m=$('pick');if(m.style.display!=='grid')sfx.open();const c=el('div','card');m.innerHTML='';m.style.display='grid';c.append(el('h3','','Add “'+esc(g.name)+'” to folder'));
 S.folders.forEach(f=>{const on=f.ids.includes(g.id),b=el('button','it'+(on?' on':''),'<i>📁</i><span></span>'+(on?'<b style="margin-left:auto">✓</b>':''));b.querySelector('span').textContent=f.name;b.onclick=()=>{on?f.ids.splice(f.ids.indexOf(g.id),1):f.ids.push(g.id);save();sfx.tog();pick(g);if(view.cat===f.id)refresh()};c.append(b)});
