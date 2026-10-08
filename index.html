@@ -1,0 +1,1863 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0d10">
+<title>GameBox</title><link rel="icon" href="logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=ADLaM+Display&display=swap" rel="stylesheet">
+<style>
+:root{--a:hsl(118 75% 45%);--a2:hsl(118 80% 62%);--sw:150px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#0b0d10;color:#fff;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;user-select:none}
+button,input{font:inherit;color:inherit}button{cursor:pointer;background:none;border:0;padding:0}
+#bg{position:fixed;inset:0;overflow:hidden}
+.bl{position:absolute;inset:-8%;background-size:cover;background-position:center;opacity:0;transition:opacity .7s;filter:blur(38px) saturate(1.3) brightness(.65)}
+.bl.on{opacity:1}
+body.pm .bl{filter:brightness(.6)}body.pm .bl,body.pl .bl{transition-duration:.3s}
+#shade{position:fixed;inset:0;background:radial-gradient(110% 80% at 50% 25%,#0000 25%,#000b),linear-gradient(#0000 45%,#000e)}
+#top{position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;gap:14px;padding:0 24px;z-index:5}
+#av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--a),var(--a2));display:grid;place-items:center;font-weight:700;transition:transform .35s cubic-bezier(.3,1.9,.5,1)}
+#av:hover{transform:scale(1.15) rotate(-8deg)}
+#nm{font-weight:600;font-size:14px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#nav{flex:1;display:flex;gap:4px;justify-content:center;overflow-x:auto;scrollbar-width:none}
+.tb{padding:8px 15px;border-radius:99px;font-size:14px;color:#cfd6dd;transition:background .25s,color .25s,transform .3s cubic-bezier(.3,1.9,.5,1);white-space:nowrap}
+.tb:hover{background:#fff2;transform:translateY(-2px)}.tb.on{background:#fff;color:#000;font-weight:600}
+#q{width:150px;padding:8px 14px;border-radius:99px;border:1px solid #fff3;background:#0006;outline:0;font-size:14px;transition:width .35s,border-color .25s}
+#q:focus{width:230px;border-color:var(--a)}
+#clk{font-weight:600;min-width:52px;text-align:right}
+#gear{width:34px;height:34px;border-radius:50%;font-size:17px;transition:background .25s,transform .5s}#gear:hover{background:#fff2;transform:rotate(90deg)}
+#stage{position:fixed;left:0;right:0;top:calc(50% - 150px);height:270px;z-index:2;touch-action:pan-y;cursor:grab}
+.t{position:absolute;left:0;top:70px;width:var(--sw);height:var(--sw);border-radius:6px;background-size:cover;transform-origin:0 100%;will-change:transform;box-shadow:0 12px 30px #0009}
+.t.f{box-shadow:0 0 0 3px #0b0d10,0 0 0 6px var(--a),0 0 40px -4px var(--a)}
+.t .n{position:absolute;left:0;right:0;bottom:0;padding:22px 8px 7px;font-size:11px;font-weight:600;background:linear-gradient(#0000,#000c);opacity:0;transition:opacity .25s;border-radius:0 0 6px 6px}
+.t.f .n{opacity:1}
+.ac{position:absolute;top:5px;right:5px;display:none;gap:4px}.t.f .ac{display:flex}
+.ac button{width:24px;height:24px;border-radius:50%;background:#000a;font-size:12px;transition:transform .25s cubic-bezier(.3,1.9,.5,1)}.ac button:hover{transform:scale(1.25);background:var(--a)}
+#info{position:fixed;left:96px;top:calc(50% + 138px);z-index:2;pointer-events:none}
+#ttl{font-size:26px;font-weight:700;text-shadow:0 2px 12px #000a}#sub{color:#b8c0c9;font-size:13px;margin-top:2px}
+#empty{position:fixed;left:0;right:0;top:50%;text-align:center;color:#9aa3ad;display:none;z-index:2}
+#dock{position:fixed;left:96px;bottom:30px;display:flex;gap:12px;z-index:3}
+.d{width:190px;height:96px;border-radius:6px;background:#0c1f2ecc;backdrop-filter:blur(8px);display:flex;flex-direction:column;justify-content:space-between;padding:12px;text-align:left;font-size:14px;font-weight:600;transition:transform .4s cubic-bezier(.3,1.8,.5,1),box-shadow .25s}
+.d b{font-size:24px;font-weight:400}.d:hover{transform:scale(1.07) rotate(-.6deg);box-shadow:0 0 0 3px var(--a)}.d.pl2{background:linear-gradient(135deg,var(--a),#000a)}
+#scrim{position:fixed;inset:0;z-index:29;background:#0008;opacity:0;pointer-events:none;transition:opacity .35s}#scrim.on{opacity:1;pointer-events:auto}
+#edge{position:fixed;left:0;top:0;bottom:0;width:8px;z-index:28}
+#side{position:fixed;left:0;top:0;bottom:0;width:360px;max-width:92vw;z-index:30;transform:translateX(-104%);transition:transform .5s cubic-bezier(.2,.9,.2,1);background:linear-gradient(90deg,#0b0f14f5,#0b0f14e6);backdrop-filter:blur(26px);padding:24px 18px;overflow:auto;border-right:1px solid #fff1}
+#side.on{transform:none}body.pl #side{transition:none}
+#side h2{margin:4px 8px 16px;font-size:22px}
+.it{display:flex;align-items:center;gap:14px;width:100%;padding:12px;border-radius:12px;text-align:left;font-size:16px;transition:background .2s,transform .3s cubic-bezier(.3,1.8,.5,1)}
+.it:hover,.it.on{background:#fff1;transform:translateX(5px)}
+.it i{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--a),#0006);font-style:normal;flex:none}
+.sec{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s ease}.sec.on{grid-template-rows:1fr}.sec>div{overflow:hidden}.in{padding:8px 8px 18px}
+.seg{display:flex;background:#fff1;border-radius:12px;padding:3px;gap:3px}.seg button{flex:1;padding:9px 4px;border-radius:9px;font-size:13px;transition:background .25s}.seg .on{background:var(--a);font-weight:600}
+.hint{font-size:12px;color:#9aa3ad;margin:8px 2px 0;line-height:1.4}
+#ww{position:relative;width:170px;height:170px;margin:4px auto 12px;touch-action:none}
+#wheel{position:absolute;inset:0;border-radius:50%;cursor:pointer;background:conic-gradient(hsl(0 80% 50%),hsl(60 80% 50%),hsl(120 80% 50%),hsl(180 80% 50%),hsl(240 80% 50%),hsl(300 80% 50%),hsl(360 80% 50%));-webkit-mask:radial-gradient(circle,#0000 45px,#000 46px);mask:radial-gradient(circle,#0000 45px,#000 46px)}
+#kn{position:absolute;width:20px;height:20px;margin:-10px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px #000a;pointer-events:none}
+#cp{position:absolute;left:50%;top:50%;width:70px;height:70px;margin:-35px;border-radius:50%;background:var(--a);box-shadow:0 0 30px var(--a)}
+.sws{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.sws button{width:26px;height:26px;border-radius:50%;transition:transform .3s cubic-bezier(.3,1.9,.5,1)}.sws button:hover{transform:scale(1.3)}
+.txt{width:100%;padding:11px 14px;border-radius:10px;border:1px solid #fff3;background:#0006;outline:0}.txt:focus{border-color:var(--a)}
+.row{display:flex;gap:8px;margin-bottom:10px}.row .txt{flex:1}
+.mini{padding:9px 13px;border-radius:10px;background:var(--a);font-weight:600;font-size:13px}
+.fr{display:flex;align-items:center;gap:4px;padding:6px 4px 6px 10px;border-radius:10px;background:#fff1;margin-bottom:6px;font-size:14px}.fr span{flex:1;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr button{width:28px;height:28px;border-radius:8px}.fr button:hover{background:#fff2}
+#pick{position:fixed;inset:0;z-index:40;background:#000a;display:none;place-items:center}
+#pick .card{width:340px;max-width:92vw;max-height:80vh;overflow:auto;background:#12171d;border-radius:18px;padding:18px;border:1px solid #fff2;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+#pick h3{margin:0 0 12px;font-size:16px}@keyframes pop{from{transform:scale(.85);opacity:0}}
+body.pl *{transition:none!important;animation:none!important}
+#zoom{position:fixed;z-index:150;display:none;border-radius:6px;background-size:cover;pointer-events:none}
+#fade{position:fixed;inset:0;z-index:200;background:#000;opacity:0;pointer-events:none;transition:opacity .35s}
+#player{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column}#player.open{display:flex}
+.ptop{display:flex;gap:8px;align-items:center;padding:8px 12px;background:#10141a;border-bottom:1px solid #fff1}
+.btn{padding:9px 14px;border-radius:99px;background:#fff1;font-size:14px;transition:background .2s}.btn:hover{background:var(--a)}
+.ptitle{flex:1;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pstage{position:relative;flex:1;background:#000}#frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+#status{position:absolute;inset:0;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;text-align:center;padding:24px;color:#9aa3ad;background:#0b0d13}#status.hide{display:none}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid #2a2f42;border-top-color:var(--a);animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.err{color:#ff6b7a;font-weight:600}
+@media(max-width:700px){#top{padding:0 12px;gap:8px}#nm,#clk{display:none}#q{width:100px}#info,#dock{left:24px}.d{width:130px}#edge{display:none}}
+
+/* ===== Xbox home restyle + player fixes ===== */
+:root{--pl:296px}
+.bl{filter:blur(22px) saturate(1.25) brightness(.7)}
+body:not(.pm):not(.pl) .bl.on{animation:dr 28s ease-in-out infinite alternate}@keyframes dr{to{transform:scale(1.1) translate(-2%,1.5%)}}
+#info,#dock{left:var(--pl)}
+.t{border-radius:4px}.t .n{border-radius:0 0 4px 4px}
+.t.f{box-shadow:0 0 0 3px #0b0d10,0 0 0 6px #fff,0 24px 60px -8px #000;animation:br 2.4s ease-in-out infinite}
+@keyframes br{50%{box-shadow:0 0 0 3px #0b0d10,0 0 0 6px #fff,0 0 36px 4px var(--a),0 24px 60px -8px #000}}
+.t::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at var(--mx,50%) var(--my,25%),#fff5,#fff0 60%);opacity:0;transition:opacity .25s;pointer-events:none}
+.t.f::after,.t:hover::after{opacity:1}
+#rowt{position:fixed;left:var(--pl);top:calc(50% - 194px);z-index:2;display:flex;align-items:baseline;gap:10px;pointer-events:none}
+#rowt b{font-size:20px;font-weight:600;text-shadow:0 2px 12px #000a}#rowt span{color:#9aa3ad;font-size:13px}
+#rowt .oi{pointer-events:auto;display:flex;align-items:center;gap:6px;margin-left:8px;cursor:pointer;user-select:none;text-shadow:0 2px 10px #000a}
+#rowt .oi input{accent-color:var(--a2);width:15px;height:15px;margin:0;cursor:pointer}#rowt .oi span{color:#cfd6dd}#rowt .oi small{color:#9aa3ad;font-size:12px}
+.d{border-radius:4px;background:#161a20d9}.d:hover{box-shadow:0 0 0 3px #fff}
+#cnt,#rec,#hints{display:none}
+#toast{position:fixed;left:50%;bottom:28px;z-index:300;transform:translate(-50%,20px);padding:12px 18px;border-radius:8px;background:#161a20;border:1px solid #fff3;font-size:14px;opacity:0;pointer-events:none;transition:opacity .3s,transform .4s cubic-bezier(.3,1.6,.5,1)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#status{color:#fff}
+.lt{width:120px;height:120px;border-radius:6px;background-size:cover;box-shadow:0 0 0 3px #fff,0 20px 50px #000a;animation:lp 1.6s ease-in-out infinite}@keyframes lp{50%{transform:scale(1.06)}}
+.bar{position:relative;width:200px;height:3px;border-radius:2px;background:#ffffff1f;overflow:hidden}
+.bar::after{content:"";position:absolute;inset:0;width:40%;background:var(--a);animation:sl 1.1s ease-in-out infinite}@keyframes sl{from{transform:translateX(-100%)}to{transform:translateX(260%)}}
+@media(min-width:900px){
+#edge{display:none}
+#top{padding:0 28px 0 var(--pl)}
+#av,#nm{position:fixed;left:22px;top:15px}#nm{left:66px;top:22px;max-width:150px}
+#nav{position:fixed;left:0;top:0;bottom:0;width:256px;padding:78px 12px 250px;flex-direction:column;justify-content:flex-start;gap:2px;overflow:hidden auto;background:linear-gradient(#10141aee,#0b0e12f2);backdrop-filter:blur(20px);border-right:1px solid #ffffff14;z-index:-1}
+#nav .tb{text-align:left;border-radius:6px;padding:12px 14px;font-size:15px;color:#d5dbe2}
+#nav .tb:hover{background:#ffffff1a;transform:translateX(4px)}
+#nav .tb.on{background:#ffffff26;color:#fff;font-weight:600;box-shadow:inset 3px 0 var(--a)}
+#q{width:auto;flex:1;max-width:560px;margin-right:auto;padding:11px 18px;background:#14181ecc;border-color:#ffffff26}
+#q:focus{width:auto;border-color:#fff;box-shadow:0 0 0 3px #fff3}
+#cnt{display:block;margin-left:12px;padding:6px 12px;border-radius:99px;background:#ffffff1a;font-size:13px;font-weight:600}
+#rec{display:block;position:fixed;left:12px;bottom:18px;width:232px;z-index:6}
+#rec h4{margin:0 8px 6px;font-size:13px;color:#9aa3ad;font-weight:600}
+.rc{display:flex;gap:10px;align-items:center;width:100%;padding:6px 8px;border-radius:6px;text-align:left;font-size:13px;transition:background .2s,transform .3s cubic-bezier(.3,1.8,.5,1)}
+.rc:hover{background:#ffffff1a;transform:translateX(4px)}
+.rc i{width:38px;height:38px;border-radius:4px;background-size:cover;flex:none}.rc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hints{display:flex;position:fixed;right:28px;bottom:34px;z-index:3;gap:18px;font-size:13px;color:#b8c0c9}
+#hints kbd{display:inline-grid;min-width:24px;height:24px;padding:0 6px;margin-right:5px;place-items:center;border-radius:6px;background:#ffffff26;color:#fff;font-size:12px;font-weight:600;font-family:inherit}
+}
+
+#warn{position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:12px;max-width:min(720px,calc(100vw - 24px));padding:8px 8px 8px 16px;border-radius:10px;background:#2a2108ee;border:1px solid #f5c54a88;color:#ffe3a3;font-size:13px;line-height:1.35;box-shadow:0 8px 28px #0008;backdrop-filter:blur(8px);transition:opacity .3s,transform .3s}
+#warn.gone{opacity:0;transform:translate(-50%,-12px);pointer-events:none}
+#warn button{flex:none;width:26px;height:26px;border:0;border-radius:6px;background:#ffffff1a;color:inherit;font-size:18px;line-height:1;cursor:pointer}#warn button:hover{background:#ffffff33}
+.pre #warn{opacity:0}
+@media(max-width:700px){#warn{font-size:12px;top:62px}}
+/* ===== GameBox: font, logo, intro, entrance ===== */
+html{font-synthesis:none}html,body,button,input{font-family:"ADLaM Display","Segoe UI",system-ui,sans-serif}
+#av{width:40px;height:40px;background:url(logo.png) center/cover no-repeat;font-size:0;box-shadow:0 0 0 2px #fff3}
+#intro{position:fixed;inset:0;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;background:radial-gradient(60% 55% at 50% 44%,#14803c,#0a4220 52%,#03170a);transition:opacity .9s ease,visibility 0s .9s}
+#intro.out{opacity:0;visibility:hidden;pointer-events:none}
+#il{width:min(34vmin,260px);height:auto;opacity:0;filter:blur(18px) brightness(.35) drop-shadow(0 0 0 #6dff9a00);transform:scale(.86)}
+#iw{font-size:min(7vmin,52px);letter-spacing:.5em;margin-left:.5em;opacity:0;color:#eafff0;text-shadow:0 0 30px #3dff7a99}
+#itap{position:absolute;bottom:9vh;font-size:15px;color:#bff5cd;opacity:0}#itap.on{animation:tp 1.6s ease-in-out infinite}@keyframes tp{0%,100%{opacity:.9}50%{opacity:.3}}
+#intro.go #il{animation:il 5.2s cubic-bezier(.3,.6,.2,1) .3s forwards}
+#intro.go #iw{animation:iw 3.6s ease-out 4.4s forwards}
+@keyframes il{35%{opacity:.7}to{opacity:1;filter:blur(0) brightness(1) drop-shadow(0 0 60px #6dff9acc);transform:scale(1)}}
+@keyframes iw{from{opacity:0;letter-spacing:.9em;filter:blur(6px)}to{opacity:1;letter-spacing:.5em;filter:blur(0)}}
+body.pl #il,body.pl #iw{opacity:1!important;filter:none!important;transform:none!important}
+#bg,#shade{transition:opacity 1.4s}.pre #bg,.pre #shade{opacity:0}
+.pre .t,.pre #top>:not(#nav),.pre #nav .tb,.pre .d,.pre #rowt,.pre #info,.pre #hints,.pre .rc{opacity:0}
+.pre #nav{translate:-110% 0}
+.in .t,.in .t.f{animation:sp 1s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.5s + var(--k,0)*80ms)}
+.in #av,.in #nm{animation:pp .9s cubic-bezier(.2,1.8,.4,1) .1s both}
+.in #top>:not(#nav):not(#av):not(#nm){animation:fd .8s ease-out both;animation-delay:calc(1s + var(--k,1)*60ms)}
+.in #nav{animation:sr .9s cubic-bezier(.2,1.1,.4,1) .15s both}
+.in #nav .tb{animation:sl .7s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(.45s + var(--k,1)*70ms)}
+.in #rowt,.in #info{animation:sp .9s cubic-bezier(.2,1.4,.4,1) .7s both}
+.in .d{animation:pp .8s cubic-bezier(.2,1.8,.4,1) both;animation-delay:calc(1.1s + var(--k,1)*110ms)}
+.in #hints,.in .rc{animation:fd .8s ease-out 1.7s both}
+@keyframes sp{from{opacity:0;translate:0 44px;scale:.8}}@keyframes pp{from{opacity:0;scale:.3}}@keyframes fd{from{opacity:0;translate:0 -14px}}@keyframes sl{from{opacity:0;translate:-26px 0}}@keyframes sr{from{translate:-110% 0}}
+#rowt,#info{--k:2}#hints{--k:6}
+#nav .tb:nth-child(1){--k:1}#nav .tb:nth-child(2){--k:2}#nav .tb:nth-child(3){--k:3}#nav .tb:nth-child(4){--k:4}#nav .tb:nth-child(5){--k:5}#nav .tb:nth-child(6){--k:6}#nav .tb:nth-child(7){--k:7}#nav .tb:nth-child(8){--k:8}#nav .tb:nth-child(9){--k:9}#nav .tb:nth-child(10){--k:10}#nav .tb:nth-child(11){--k:11}#nav .tb:nth-child(12){--k:12}#top>:nth-child(1){--k:1}#top>:nth-child(2){--k:2}#top>:nth-child(3){--k:3}#top>:nth-child(4){--k:4}#top>:nth-child(5){--k:5}#top>:nth-child(6){--k:6}#top>:nth-child(7){--k:7}.d:nth-child(1){--k:4}.d:nth-child(2){--k:5}.d:nth-child(3){--k:6}.d:nth-child(4){--k:7}.rc:nth-child(2){--k:4}.rc:nth-child(3){--k:5}.rc:nth-child(4){--k:6}
+
+/* intro v2 */
+#intro{background:#000;transition:none;transform-origin:50% 46%}
+#intro::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;background:radial-gradient(60% 55% at 50% 44%,#14803c,#0a4220 52%,#03170a)}
+#intro.go::before{animation:gf 2.4s ease-out both}@keyframes gf{from{opacity:0}to{opacity:1}}
+#intro.go #il{animation:lz 6s cubic-bezier(.2,.7,.2,1) .2s both}
+@keyframes lz{from{opacity:0;transform:scale(2.4);filter:blur(16px) brightness(.3) drop-shadow(0 0 0 #6dff9a00)}40%{opacity:1}to{opacity:1;transform:scale(1);filter:blur(0) brightness(1) drop-shadow(0 0 60px #6dff9acc)}}
+#intro.go #iw{animation:iw 3s ease-out 4s both}
+#intro.go{will-change:transform,opacity;animation:zo 2.1s cubic-bezier(.6,0,.95,.5) 7.8s forwards}
+@keyframes zo{from{transform:scale(1);opacity:1}55%{opacity:.85}to{transform:scale(22);opacity:0}}
+#intro.skip{animation:sk .7s cubic-bezier(.6,0,.95,.5) forwards}@keyframes sk{to{transform:scale(10);opacity:0}}
+body.pl #intro::before{opacity:1}
+.d:nth-child(1){--k:1}.d:nth-child(2){--k:2}.d:nth-child(3){--k:3}.d:nth-child(4){--k:4}
+/* ===== always-visible names, grid layout ===== */
+.t .n{opacity:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.25}
+.t.gen .n{opacity:0}
+#stage{top:0;height:100%;pointer-events:none;cursor:auto}
+.t{pointer-events:auto;cursor:grab}
+#hit{position:fixed;left:0;right:0;top:calc(50% - 150px);height:270px;z-index:1;touch-action:pan-y;cursor:grab}
+body.gm #hit{top:var(--gt,128px);bottom:var(--gb,140px);height:auto;touch-action:none;cursor:default}
+body.gm #stage{touch-action:none;-webkit-mask-image:linear-gradient(#0000 calc(var(--gt,128px) - 10px),#000 calc(var(--gt,128px) + 14px),#000 calc(100% - var(--gb,140px) - 14px),#0000 calc(100% - var(--gb,140px) + 10px));mask-image:linear-gradient(#0000 calc(var(--gt,128px) - 10px),#000 calc(var(--gt,128px) + 14px),#000 calc(100% - var(--gb,140px) - 14px),#0000 calc(100% - var(--gb,140px) + 10px))}
+body.gm .t{touch-action:none;cursor:pointer}
+body.gm #info{display:none}
+#rowt{transition:left .45s cubic-bezier(.2,.9,.2,1),top .45s cubic-bezier(.2,.9,.2,1)}
+body.gm #rowt{left:var(--gx,96px);top:78px}
+</style>
+</head>
+<body class="pre"><div id="intro"><img id="il" src="logo.png" alt=""><div id="iw">GameBox</div><div id="itap">Click anywhere to start</div></div>
+<div id="bg"><div class="bl" id="b0"></div><div class="bl" id="b1"></div></div><div id="shade"></div>
+<div id="top"><button id="av" aria-label="Settings"></button><div id="nm"></div><div id="nav"></div><input id="q" type="search" placeholder="Search" autocomplete="off"><button id="gear" aria-label="Settings">⚙</button><div id="clk"></div><span id="cnt"></span></div>
+<div id="hit"></div>
+<div id="stage"></div>
+<div id="info"><div id="ttl"></div><div id="sub"></div></div>
+<div id="empty">No games here yet. Try another tab or search.</div>
+<div id="dock"></div><div id="rowt"></div><div id="rec"></div><div id="hints"><span><kbd>←</kbd><kbd>→</kbd>Browse</span><span><kbd>↵</kbd>Play</span><span><kbd>F</kbd>Favorite</span><span><kbd>/</kbd>Search</span><span><kbd>S</kbd>Settings</span></div><div id="toast"></div>
+<div id="warn" role="alert"><span>Not all games are guaranteed to work, since they're auto loaded from GitHub and aren't checked individually</span><button id="warnx" aria-label="Close warning">×</button></div><div id="edge"></div><div id="scrim"></div><aside id="side"></aside><div id="pick"></div>
+<div id="zoom"></div><div id="fade"></div>
+<div id="player" aria-hidden="true">
+  <div class="ptop"><button class="btn" id="back">← Back</button><div class="ptitle" id="ptitle"></div><button class="btn" id="reload" title="Reload">⟳</button><button class="btn" id="newtab" title="New tab">↗</button><button class="btn" id="full">⛶ Fullscreen</button></div>
+  <div class="pstage" id="pstage">
+    <iframe id="frame" allow="fullscreen; autoplay; gamepad; clipboard-write; pointer-lock" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-forms allow-modals allow-downloads"></iframe>
+    <div id="status"><div class="spinner"></div><div>Loading…</div></div>
+  </div>
+</div>
+<script>
+/* Where games are fetched from (tried in order). */
+const BASES = [
+  'https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/',
+  'https://fastly.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/',
+  'https://gcore.jsdelivr.net/gh/bubbls/ugs-singlefile/UGS-Files/'
+];
+
+/* Catalog: "Name|file". Section headers start with ##. */
+const RAW = `
+## Games
+10 Minutes Till Dawn|cl10minutestildawn.html
+12 Mini Battles|cl12minibattles.html
+1v1.lol|cl1v1lol.html
+2048|cl2048.html
+2048 Cupcakes|cl2048cupcakes.html
+2-3-4 Player Games|cl234playergame.html
+20 Small Mazes|cl20smallmazes.html
+2Doom|cl2doomy.html
+2D Shooting|cl2Dshooting.html
+3Dash|cl3dashy.html
+3Dash Editor|cl3dash.html
+3D Pinball Space Cadet|cl3dpinballspacecadet.html
+4th And Goal|cl4thandgoal.html
+500 Caliber Contractz|cl500calibercontractz.html
+8 Ball Classic|cl8ballclassic.html
+9007199254740992|cl9007199254740992.html
+99 Balls|cl99balls.html
+99 Nights In The Forest|cl99nightsitf.html
+A Dance of Fire and Ice|clADOFAI.html
+A Dark Room|clADarkRoom.html
+A Date With Death|cladatewithdeath.html
+A Day In The Office|cladayintheoffice.html
+Advent Neon|cladventneon.html
+Adventure Capitalist|clAdventureCapatalist.html
+Ahoy Survival|clahoysurvival.html
+Airline Tycoon Idle|clairlinetycoonidle.html
+Agar.io Lite|clagariolite.html
+Ages of Conflict|clagesofconflict.html
+Alien Sky Invasion|clalienskyinvasion.html
+Allocation|clallocation.html
+Amazing Strange Rope Police|clstreangeropepolice.html
+Amidst The Sky|clamidstthesky.html
+Among Us|clamongus.html
+Amorphous +|clamorphous.html
+Ancient Sins|clancientsins.html
+Angry Birds|clangrybirds.html
+Angry Birds 2|clangrybirds2.html
+Angry Birds Showdown|clangrybirdsshowdown.html
+Angry Birds Slingshot Frenzy|clangrybirdsslingshotfrenzy.html
+Animal Crossing|clanimalcrossing.html
+Antimatter Dimensions|clantimatterdimensions.html
+Ant Art Tycoon|clantarttycoon.html
+Apes vs. Helium|clapesvshelium.html
+Aquapark.io|claquaparkio.html
+Arcade Volley|clarcadevolley.html
+Archery World Tour|clarcheryworldtour.html
+Archesspelago|clarchesspelago.html
+Arsonate|clarsonate.html
+Are We There Yet|clarewethereyet.html
+Arthur's Nightmare|clarthuarsnightmare.html
+Ascent|clascent.html
+Assessment Examination|classesmentexaminationque.html
+As Duty Demands|clasdutydemands.html
+Asteroids|clasteroidsALT.html
+A Small World Cup|clasmallworldcup.html
+Aviamasters|claviamastersbuggy.html
+Babel Tower|clbabeltower.html
+Baby Chicco Adventure|clbabychiccoadventure.html
+Baby Sniper In Vietnam|clbabysniperinvietnam.html
+Backrooms|clbackrooms.html
+Backrooms 2D|clbackrooms2D.html
+Bacon May Die|clbaconmaydie.html
+Bad Bodyguards|clbadbodyguards.html
+Bad Monday Simulator|clbadmondaysimulator.html
+Bad Parenting|clbadparenting.html
+Bad Piggies|clbadpiggieslatest.html
+Bad Time Simulator|clbadtimesim.html
+Baldi's Basics|clbaldisbasics.html
+Baldi's Basics Remastered|clbaldisbasicsremaster.html
+Baldi's Basics The Ultra Decompile|clbaldidecomp.html
+Baldi's Fun New School Ultimate|clbaldisfunnewschoolultimate.html
+Ballistic|clballistic.html
+Balls And Bricks|clballsandbricksgood.html
+Ball Blast|clballblast.html
+BallZ|clballz.html
+Banana Simulator|clbananasimulator.html
+Bank Robbery 1|clbankrobbery1.html
+Bank Robbery 2|clbankrobbery2.html
+Barry Has a Secret|clbarryhasasecret.html
+Bart Blast|clbartblast.html
+Baseball Bros|clbaseballbros.html
+Basket Battle|clbasketbattle.html
+Basket Bros|clbasketbros.html
+Basket Random|clbasketrandom.html
+Basket Slam Dunk 2|clbasketslamdunk2.html
+Basketball FRVR|clbasketballfrvr.html
+Basketball Legends 2020|clbasketballlegends.html
+Basketball Stars|clbasketballstars.html
+Basketball Superstars|clbasketballsuperstars.html
+Batter Up|clbatterup.html
+Battles|clbattles.html
+Battle Karts|clbattlekarts.html
+Battle Simulator|clbattlesim.html
+Beach Boxing Simulator|clbeachboxingsim.html
+Bearsus|clbearsus.html
+BERGENTRUCK 201x|clbergentruck201x.html
+BFDIA 5b|clbfdia5b.html
+BFDI Branches|clbfdibranches.html
+Big Flappy Tower Tiny Square|clbigflappytowertinysquare.html
+Big Ice Tower Tiny Square|clbigicetowertinysquare.html
+Big Neon Tower Tiny Square|clbigneontowertinysquare.html
+Big Shot Boxing|clbigshotboxing2.html
+Big Tower Tiny Square|clbtts.html
+Big Tower Tiny Square 2|clbtts2.html
+Bio Evil 4|clbioevil4.html
+Bit Burner|clbitburner.html
+BitLife|clbitlife.html
+Bit Planes|clbitplanes.html
+Blackjack|clblackjackhhhh.html
+Blastronaut|clblastronaut.html
+Blaze Drifter|clblazedrifter.html
+Blightborne|clblightborne.html
+Block Blast|clblockblast.html
+Block Blast 2|clblockblastv2.html
+Blockpost|clblockpost.html
+Block the Pig|clblockthepig.html
+Blocky Demolition Derby|clblockydemolitionderby.html
+Blocky Snakes|clblockysnakes.html
+Blood Tournament|clbloodtournament.html
+Bloodmoney|clbloodmoney.html
+Blumgi Racers|clblumgiracers.html
+Blumgi Rocket|clblumgirocket.html
+Bob the Robber 2|clbobtherobber2.html
+Bob the Robber 5|clbobtherobber5.html
+Boba Simulator|clbobasimulator.html
+Boom Slingers|clboomslingers.html
+Bottle Cracks|clbottlecracks.html
+Bottle Jump 3D|clbottlejump3d.html
+Bouncemasters|clbouncemasters.html
+Bounce Back|clbounceback.html
+Bouncy Basketball|clbouncybasketball.html
+Bouncy Motors|clbouncymotors.html
+Bounty of One|clBountyOfOne.html
+Bowmasters|clbowmaster.html
+Boxing Random|clboxingrandom.html
+Brawl Simulator 3D|clbrawlsimulator3d.html
+Brawl Stars (Remake)|clbrawlstarsremake.html
+Breadskate Forever|clbreadskate.html
+Bridge Race|clbridgerace.html
+Brotato|clbrotato.html
+BTD6 (Scratch)|clbloonsTD6scratch.html
+BuildNow.GG|clbuildnowgg.html
+Build-Defend|clbuild.html
+Bunnyland|clbunnyland.html
+Burger and Frights|clburgerandfrights.html
+Burrito Bison Launcha Libre|clburritobisonlaunchalibre.html
+Buster Jam|clBusterJam.html
+Cannon Balls 3D|clcannonballs3d.html
+Candy Box 1|clcandybox1.html
+Capybara Clicker|clcapybaraclicker.html
+Call of Battle|clcallofbattle.html
+CaptchaWare|clcaptchaware.html
+Car Crash 3|clcarcrash3.html
+Car Drawing|clcardrawing.html
+Car King Arena|clcarkingarena.html
+Car Ramp Vs Police Chase|clcarrampvspolicechase.html
+Cartoon Network Table Tennis Ultimate Tournament|clCartoonNetworkTableTennisUltimateTournament.html
+Castle Wars Modern|clcastlewarsmodern.html
+Cat Mario|clcatmario.html
+Cats Love Cake 2|clcatslovecake2.html
+Cave Crawler|clcavecrawler.html
+Cave Story|clcavestory.html
+Celeste Pico|clceleste.html
+Celeste 2|clceleste2.html
+Cell Machine|clcellmachine.html
+Cell to Singularity|clCelltoSingularity.html
+Champion Island|clchampionisland.html
+Chaos Faction 2|clchaosfaction2.html
+Cheese Chompers 3D|clcheesechompers3d.html
+Cheese Is The Reason|clcheeseisthereason.html
+Cheese Rolling|clcheeserolling.html
+ChickenCS|clchickencs.html
+Cheshire In a Chatroom|clcheshireinachatroom.html
+Chess Classic|clchessclassic.html
+Chicken Scream|clchickenscream.html
+Chickenwar|clchickenwar.html
+Choppy Orc|clchoppyorc.html
+CircloO 2|clCircloO2.html
+Civiballs|clciviballs.html
+Civiballs 2|clciviballs2.html
+Clash Of Vikings|clclashofvikings.html
+Class of '09|clclassof09.html
+Cleanup.io|clcleanupio.html
+Cluster Rush|clclusterrush.html
+Coal LLC|clcoalllcdemo.html
+Cold Pines|clcoldpines.html
+Coffee Maker|clcoffeemaker.html
+Colorbox Mustard|clColorboxmustard.html
+Combo Pool|clcombopool.html
+Command and Conquer: Red Alert|clredalert.html
+Command and Conquer: Tiberian Dawn|cltiberiandawn.html
+Cookie Clicker|clcookieclicker.html
+Cookie Clicker Mod Menu|clcookieclickermodmenu.html
+Core Ball|clcoreball.html
+Cold Front|clcoldfront.html
+Count Masters: Stickman Games|clcountmastersstickmangames.html
+Counter Snipe|clcountersnipe.html
+Crank It!|clcrankit!.html
+Crazy Cars|clcrazycars.html
+Crazy Cattle 3D|clcrazycattle3d.html
+Crazy Chicken 3D|clcrazychicken3D.html
+Crazy Motorcycle|clcrazymotorcycle.html
+Crazy Plane Landing|clcrazyplanelanding.html
+Creature Card Idle|clcreaturecardidle.html
+Crossy Road|clcrossyroad.html
+C.S 1.6|clcs1.6.html
+CSGO Clicker|clcsgoclicker.html
+Customer Support|clcustomersupport.html
+Curse of the Lich King|clcotlk.html
+Cut the Rope|clcuttherope.html
+Cyberbung Racing|clcyberbungracing.html
+Dadish|cldadish.html
+Dandy's World Clicker|cldandysworldclicker.html
+Dan the Man|cldtm.html
+Dank Tomb|cldanktomb.html
+Dash Arena|cldasharena.html
+Dash Party|cldashio.html
+Dashmetry|cldashmetry.html
+Dead Estate|cldeadestate.html
+Dead Plate|cldeadplate.html
+Dead Seat|cldeadseat.html
+Deadly Descent|cldeadlydescent.html
+Death Chase|cldeathchase.html
+Death Run|cldeathrun.html
+Deepest Sword|cldeepestsword.html
+Deltarune|cldeltarune.html
+Deltarune: A Different Snowgrave|cladifferentsnowgrave.html
+Deltatraveler|cldeltatraveler.html
+Demolition Derby Crash Racing|cldemolitionderbycrashracing.html
+Demon Bluff|cldemonbluff.html
+Die in the Dungeon|cldieinthedungeon.html
+Dig out of Prison|cldigoutofprison.html
+Dire Decks|cldiredecks.html
+Doblox|cldoblox.html
+Dodecadragons|cldodecadragons.html
+Doge Miner|cldogeminer.html
+Doge Miner 2|cldogeminer2.html
+Dome Romantik|cldomeromantik.html
+Doki Doki Literature Club|cldokidokiliteratureclub.html
+Doodle Jump|cldoodlejumpgoober.html
+Doom But It's Half Life 2|clhl2doom.html
+Doom Emscripten|cldoomemscripten.html
+Doom Gallery Experience|cldoomgallery.html
+Doomz.io|cldoomzio.html
+Doomori|cldoomori.html
+Doors Castle|cldoorscastle.html
+Double Barrel Sniper|cldbsniper.html
+Draw Climber|cldrawclimber.html
+Draw the Line|cldrawtheline.html
+DTA 6|cldta6.html
+Dreader|cldreader.html
+Dreadhead Parkour|cldreadheadparkour.html
+Dr. Weed Gaster|cldrweedgaster.html
+Drift Boss|cldriftboss.html
+Drift Hunters|cldrifthuntersmerge.html
+Drift Simulator|cldriftsimulator.html
+Drive In Russia|cldriverussia.html
+Drive Mad|cldrivemady.html
+Driven Wild|cldrivenwild.html
+Dimensional Incident|cldimensionalincident.html
+Duck Life Space|clducklifespace.html
+Duck Life Battle|clducklifebattle.html
+Ducklings.io|clducklingsio.html
+DUD|cldud.html
+Duke Nukem 3D|cldukenukem3d.html
+Dumb Ways to Die|cldumbwaystodie.html
+Dune Dash|cldunedash.html
+Dungeon Deck|cldungeondeck.html
+Dungeon Raid|cldungeonraid.html
+Dungeons And Degenerate Gamblers|cldungeonsanddegenerategambler.html
+Dunk Shot|cldunkshot.html
+Duke Nukem 2|cldukenukem2.html
+Dusk Child|clduskchild.html
+Dying Dreams|cldyingdreams.html
+Eagle Ride|cleagleride.html
+Edelweiss|cledelweiss.html
+Edy's Car Simulator|cledyscarsimulator.html
+Effing Hail|cleffinghail.html
+Egg|clegg.html
+Eggy Car|cleggycar.html
+Elastic Face|clelasticface.html
+Elytra Flight|clelytraflight.html
+Enchain|clenchain.html
+Endacopia|clendacopia.html
+Escalating Duel|clescalatingduel.html
+Escape School Duel|clescapeschoolduel.html
+Escape Road|clescaperoad.html
+Escape Road 2|clescaperoad-2.html
+Escape Road 3|clescaperoad3.html
+Escape Road City 2|clescaperoadcity2.html
+Eugene's Life|cleugeneslife.html
+Euroaural Song Contest 2D|cleurovisionsim.html
+Evil Glitch|clevilglitch.html
+Evolution|clevolution.html
+Exoplanet Observation|clexoobservation.html
+Fall Guys|clfallguys.html
+Fashion Battle|clfashionbattle.html
+Fears to Fathom: Home Alone|clfearstofathomhomealone.html
+Fear Assessment (Demo)|clfearassessment.html
+Feed The Void|clfeedthevoid.html
+Final Earth 2|clfinalearth2.html
+Find The Alien|clfindthealien.html
+Fireblob|clfireblob.html
+Fireboy and Watergirl 2|clfireboyandwatergirl2.html
+Fireboy and Watergirl 3|clfireboyandwatergirl3.html
+Fish Eat Getting Big|clfisheatgettingbig.html
+Fisquarium|clfisquarium.html
+Five Nights at Candy's 1|clfnac1.html
+Five Nights at Candy's 2|clfnac2.html
+Five Nights at Baldi's Redone|clfivenightsatbaldisredone.html
+Five Nights at Frickbear's 3|clfivenightsatfrickbears3.html
+Five Nights at Winston's|clfnaw.html
+Five Nights At Shrek's Hotel|clfivenightsatshreks.html
+Five Nights At Yoshi's|clfivenightsatyoshis.html
+Fluidism|clfluidism.html
+FNAF|clFNAF.html
+FNAF 2|clFNAF2.html
+FNAF 3|clFNAF3.html
+FNAF 4|clFNAF4.html
+FNAF 4 Halloween|clfnaf4halloween.html
+FNAF Pizzeria Simulator|clfnafps.html
+FNAF Ultimate Custom Night|clfnafucn.html
+FNAF Sister Location|clfnafsl.html
+FNAF Shooter|clfnafshooter.html
+FNAF World|clfnafworldd.html
+FNAF 3 Remastered|clfnaf3remastered.html
+Football Bros|clfootballbros.html
+Football Legends|clfootballlegends.html
+Folder Dungeon|clfolderdungeon.html
+Fork n Sausage|clforknsausage.html
+Fortzone Battle Royale|clfortzone.html
+Freegemas|clfreegemas.html
+From Rust To Ash|clfromrusttoash.html
+Fruit Ninja|clfruitninja.html
+Fused 240|clfused240.html
+Funny Battle Simulator|clfunnybattle.html
+Funny Battle Simulator 2|clfunnybattle2.html
+Funny Mad Racing|clfunnymadracing.html
+Funny Shooter 2|clfunnyshooter22.html
+Generic Fighter Maybe|clgenericfightermaybe.html
+Geometry Dash Lite|clgdlite.html
+Geometry Dash Scratch|clgeometrydashscratch.html
+Geometry Dash SubZero|clgdsubzero.html
+Geometry Dash Wave|clgeometrydashwave.html
+Geometry Dash World|clgdworld.html
+Geometry Vibes|clgeometryvibes.html
+George And The Printer|clgeorgeandtheprinter.html
+Getaway Shootout|clgetawayshootout.html
+Getting Over It (Scratch)|clgettingoverit.html
+Get On Top|clgetontop.html
+Get Yoked|clgetyoked.html
+Gimme the Airpod|clgimmietheairpod.html
+Gladihoppers|clgladdihoppers.html
+GLFighters|clglfighters.html
+Glory Hunters|clgloryhunters.html
+Gobble|clgobble.html
+Going Balls|clgoingballs.html
+Gold Digger FRVR|clgolddiggerfrvr.html
+Gold Miner|clgoldminer.html
+Golf Battle|clgolfbattle.html
+Golf Sunday|clgolfsunday.html
+Google Baseball|clgooglebaseball.html
+Google Dino|clgoogledino.html
+Gorescript Classic|clgorescriptclassic.html
+Gorilla Tag|clgorillatag.html
+Go to bed|clgotobed.html
+Grand Action Simulator: New York|clgrandactionsimulator-ny.html
+Grand Escape Prison|clgrandescapeprison.html
+Grand Theft Auto III|clgta3.html
+Grand Shift Auto|clgrandshiftauto.html
+Greener Grass Awaits|clgreenergrassawaits.html
+Granny|clgrannyy.html
+Granny 2|clgranny22.html
+Granny 3|clgranny3.html
+Granny Creepy|clgrannycreepy.html
+Granny Nightmare|clgrannynightmare.html
+Granny Online|clgranny2.html
+Gravity|clgravity.html
+Gravity Mod|clgravitymod.html
+Grey Box Testing|clgrey-box-testing.html
+Grindcraft|clgrindcraft.html
+Grow A Garden|clgrowagarden.html
+Growmi|clgrowmi.html
+Grow Your Garden|clgrowyourgarden.html
+Growden.io|clgrowdenio.html
+GTA Mods|clgtamods.html
+Guess Their Answer|clguesstheiranswer.html
+Guncho|clguncho.html
+Gun Knight|clgunknight.html
+Gun Night|clgunnight.html
+Gun Spin|clgun-spin.html
+Gym Stack|clgymstack.html
+Half Life|clhalflife.html
+Handshakes|clhandshakes.html
+Handulam+|clhandulum.html
+Hanger 2|clhanger2.html
+Happy Room|clhappyroom.html
+Hardware Tycoon|clhardwaretycoon.html
+Harold's Bad Day|clHaroldsbadday.html
+Harvest.io|clharvestio.html
+Haunted School|clhauntedschool.html
+HEI$T|clhei$t.html
+Helix Jump|clhelixjump.html
+HellroN|clhellron.html
+Helltaker|clhelltaker.html
+Help No Brakes!|clhelpnobrakes.html
+Hero 3: Flying Robot|clhero3flyingrobot.html
+Hextris|clhextris.html
+Hide n Seek|clhidenseek.html
+High Stakes|clhighstakes.html
+Highway Racer|clhighwayracer2.html
+Hill Climb Racing Lite|clhillclimbracinglite.html
+Hill Climb Racing 2 (Scratch)|clHilClimbRacing2.html
+HIT8OX|clhit8ox.html
+HitStunFly|clhitstunfly.html
+Hole.io|clholeio.html
+Horntale|clhorntale.html
+HoleBattle|clholebattle.html
+Hooked|clhooked.html
+Hot Wax|clhotwax.html
+House of Hazards|clhouseofhazards.html
+Hover Racer Drive|clhoverracerdrive.html
+Huggy Wuggy Pixel|clhuggywuggypixel.html
+Human Expenditure Program|clhumanexpenditureprogram.html
+Hungry Knight|clhungryknight.html
+Hungry Lamu|clhungrylamu.html
+Hungry Lamu 2|clhungrylamu2.html
+Hypper Sandbox|clhyppersandbox.html
+Ice Dodo|clicedodo.html
+Ice Fishing|clicefishing.html
+Icy Purple Head|clicypurplehead.html
+Idle Breakout|clidlebreakout.html
+Idle Dice|clidledice.html
+Idle Football Manager|clidlefootballmanager.html
+Idle Idle Game Dev|clidleidlegamedev.html
+Idle Miner Tycoon|clidleminertycoon.html
+Indian Truck Simulator|cltrucksim.html
+Infinite Craft|clinfinitecraft.html
+Ink Game|clinkgame.html
+Insomniary|clinsomniary.html
+Intellisphere|clintellisphere.html
+Into Ruins|clintoruins.html
+Into The Deep Web|clintothedeepweb.html
+Irori|clirori.html
+Iron Snout|clironsnout.html
+Islander|clislander.html
+It Gets So Lonely Here|clitgetssolonelyhere.html
+I Wanna Be The Guy|cliwbtg.html
+Jailbreak Obby|cljailbreakobbbobob.html
+Jazz Jackrabbit|cljazzjackrabbit.html
+Jazz Jackrabbit 2|cljazzjackrabbit2.html
+Jefflings|cljefflings.html
+Jelly Drift|cljellydrift.html
+Jelly Mario|cljellymario.html
+Jelly Truck|cljellytruckgood.html
+Jetpack Joyride|cljetpackjoyride.html
+Jetski Race|cljetskiracing.html
+Jet Rush|cljetrush.html
+Johnny Trigger|cljohnnytrigger.html
+Johnny Upgrade|cljohnnyupgrade.html
+Journey Downhill|cljourneydownhill.html
+Jsvecx|cljsvecx.html
+Jumbo Mario|cljumbomario.html
+Jumping Shell|cljumpingshell.html
+Jungle Deer Hunting|cljungledeerhunting.html
+Justfall.lol|cljustfalllol.html
+Just a Platformer|cljustaplatformer.html
+Just a Platformer Editor 1|cljustaplatformere.html
+Just a Platformer Editor 2|cljustaplatformere2.html
+Just Hit The Button|cljusthitthebutton.html
+Just One Boss|cljustoneboss.html
+Kalikan|clkalikan.html
+Karate Bros|clkaratebros.html
+Karlson|clkarlson.html
+Kart Bros|clkartbros.html
+Killover|clkillover.html
+Kill The Ice Age Baby Adventure|clkilltheiceagebabyadventure.html
+Kirby ~ Soft and Wet|clkirbysoftandwet.html
+Klifur|clklifur.html
+Knock, Knock.|clknockknock.html
+Konkr.io|clkonkrio.html
+Kour.io|clkourio.html
+KS2 Teams|clks2teams.html
+Lacey's Flash Games|cllaceysflashgames.html
+Last Horizon|cllasthorizon.html
+Leader Strike|clleaderstrike.html
+Leaf Blower Revolution|clleafblower.html
+Leap And Avoid 2|clleapandavoid2.html
+Legion Breaker|clegionbreaker.html
+Level Devil|clleveldevil.html
+Level Up - Mario Minigames Mayhem|cllummm.html
+Let It Consume|clletitconsume.html
+Lever Warriors|clleverwarriors.html
+Little Alchemy 2|cllittlealchemy2.html
+Little Runmo|cllittlerunmo.html
+Lobotomy Dash|clLobotomyDash.html
+Lock the Door|cllockthedoor.html
+Low Knight|cllowknight.html
+Lucky Blocks Obby|cluckyblockobbyEUOPHRATESRIVER.html
+Madalin Stunt Cars 2|clmadstuntcars2.html
+Madalin Stunt Cars Multiplayer|clmadalinstuntcarsmultiplayerfixed.html
+Madness 2010|clmadnesss2010.html
+Mad Skills Motocross 2|clmadskillsmotocross2.html
+Mad Stick|clmadstick.html
+Madness The Stand|clmadnessstand.html
+Mage Tower Idle Defense|clmagetoweridle.html
+Make Sure Its Closed|clmakesureitsclosed.html
+Mana God|clmanagod.html
+Marble Racer|marbleracer.html
+Mari0|clMari0.html
+Mario VS Luigi Online|clmariovsluigi.html
+Masked Forces Unlimited|clmaskedforcesunlimited.html
+Medal Of Honor|clmedalofhonor.html
+Melon Playground|clmelonplayground.html
+Megachess|clmegachess.html
+Meowio|clmeowio.html
+Merge Round Racers|clmergeroundracers.html
+Mimic|clmimic.html
+Mindwave|clmindwave.html
+Mine Shooter|clmineshooter.html
+Minecraft Case Sim|clminecraftcasesim.html
+Minecraft Parkour|clblockcraftparkour.html
+Minecraft Pocket Edition|clminecraftpocketedition.html
+Minecraft Shooter|clblockcraftshooter.html
+Minesweeper Plus|clminesweeperplus.html
+Mini Crossword|clminicrossword.html
+Mini Flips|clminiflips.html
+Mini Shooters|clminishooters.html
+Mini Tooth|clminitooth.html
+Money Rush|clmoneyrush.html
+Monster Derby|clmonsterderby.html
+Monster Tracks|clmonstertracks.html
+Monster Truck Port Stunt|clmonstertruckportstunt.html
+Monkey Mart|clmonkeymart.html
+Mom I'm Sleeping|clmomimsleeping.html
+Moto Road Rash|clmotoroadrash.html
+MotoX3M|clmotox3mm.html
+MotoX3M 2|clmotox3m2.html
+MotoX3M 3|clmotox3m3.html
+MotoX3M Pool Party|clmotox3mpoolparty.html
+MotoX3M Spooky Land|clmotox3mspookyland.html
+MotoX3M Winter|clmotox3mwinter.html
+Mountain Bike Racer|clmountainbikeracer.html
+Mr. Racer - Car Racing|clmrracer.html
+Mr Mine|clmrmine.html
+MX Offroad Master|clmxoffroadmaster.html
+My Teardrop|clmyteardrop.html
+Neon Blaster|clneonblaster.html
+Net.Attack|clnetattack.html
+Neverending Legacy|clneverendinglegacy.html
+Nextdoor|clnextdoor.html
+N-gon|clngon.html
+NGU Idle|clnguidle.html
+Nightclub Showdown|clnightclubshowdown.html
+Nightcat Survival|clnightcatsurvival.html
+Nimrods|clnimrods.html
+Ninja Obby Parkour|clninjaobbyparkor.html
+Noob Miner|clnoobminer.html
+Not Your Pawn|clnotyourpawn.html
+Nubby's Number Factory|clnubbysnumberfactory.html
+Nuts and Bolts Screwing Puzzle|clNutsandBoltsScrewingPuzzle.html
+Obby: +1 Jump per Click|clobby1jumpperclick.html
+Obby Climb For Brainrots|clobbyclimbforbrainrots.html
+Obby Cart|clobbycart.html
+Obby 99% Will Lose|clobby-99-will-lose.html
+Obby But You're On a Bike|clobbybike.html
+Obby For Lumber|cllumberobby.html
+Obby Rainbow Tower|clobbyrainbowtower.html
+Obby Robby - Only Up|clobbyonlyup.html
+Obby Slide|clobbyslide.html
+Obby Swing|clobbyswing.html
+Obby Swing For Brainrots|clswingforbrainrots.html
+Obby With Friends|clobbyfriends.html
+Obby Yard Sale|clobbyyardsale.html
+Odd Bot Out|cloddbotout.html
+Offline Paradise|clofflineparadise.html
+Oh Flip!|clohflip.html
+Omega Layers|clomegalayers.html
+Omega Nugget Clicker|clomeganuggetclicker.html
+Onebit Adventure|clonebitadventure.html
+One Night As Freddy|clonenightasfreddy.html
+Oneshot (Old)|cloneshotold.html
+Only Up|clonlyup.html
+OutHold|clouthold.html
+OverBurden|cloverburden.html
+Operius|cloperius.html
+Opposite Day|cloppositeday.html
+Orb of Creation|clorbofcreation.html
+osu!|closu.html
+OVO 3 Dimensions|clovodimensions.html
+Paper.io|clpaperio.html
+Paper.io 3D|clpaperio3d.html
+Paper.io Mania|clpaperiomania.html
+Parking Fury|clparkingfury.html
+Parking Fury 2|clparkingfury2.html
+Parking Fury 3|clparkingfury3.html
+Parking Rush|clparkingrush.html
+Penguin Diner|clpenguindiner.html
+Pereelous|clpereelous.html
+Perfect Hotel|clperfecthotel.html
+Pet World|clpetworld.html
+Phasma|clphasma.html
+Pico Driller|clpicodriller.html
+Pico Hot|clpicohot.html
+Pico Life|clpicolife.html
+Pico Night Punkin|clpiconightpunkin.html
+Pumpkin Run 64|clpumpkinrun.html
+Pieces of Cake|clpiecesofcake.html
+Ping Pong Chaos|clpingpongchaos.html
+Pinkbike|clpinkbike.html
+Pixel Battlegrounds.io|clpixelbattlegroundsio.html
+Pixel Combat 2|clpixelcombat2.html
+Pixel Gun|clpixelgun.html
+Pixel Shooter|clpixelshooter.html
+Pixel Warfare|clpixelwarfare.html
+Pizza Tower|clpizzatower.html
+Planet Life|clplanetlife.html
+Plangman|clplangman.html
+Plants vs. Zombies 2 Gardenless|clpvz2gardenless.html
+Plants vs Zombies Modded|clpvzm.html
+Plinko|clplinko.html
+Plonky|clplonky.html
+Pogo 3D|clpogo3D.html
+Pokemon Academy Life: Forever!|clpokeacademylifeforever.html
+PokePath TD|clpokepath.html
+Pom Gets Wi-Fi|clpomgetsinternet.html
+Postal|clpostal.html
+Police Pursuit 2|clpolicepursuit2.html
+Poly Track|clpolytrackworksnow.html
+Poor Bunny|clpoorbunny.html
+Portal 2D|clportal2d.html
+Porklike|clporklike.html
+Porter|clporter.html
+Prestige Tree|clprestigetree.html
+Pretend It's Not There|clpint.html
+Processor Tycoon|clprocessortycoon.html
+Prodigy (Old Version)|clprodigy.html
+Possess Quest|clpossessquest.html
+Praxis Fighter X|clpraxisfighterx.html
+Pullfrog|clpullfrog.html
+Puppet Hockey|clpuppethockey.html
+Puppet Master|clpuppetmaster.html
+Push Your Luck|clpushyourluck.html
+Quake III Arena|clquake3.html
+Quantum Clicker|clquantumclicker.html
+Rabbit Hole 1.0.6|clrabbithole106.html
+Ragdoll Archers|clragdollarchers.html
+Ragdoll Drop|clragdolldrop.html
+Ragdoll Hit|clragdollhit.html
+Ragdoll Runners|clragdollrunners.html
+Ragdoll Soccer|clragdollsoccer.html
+Ravenbase|clravenbase.html
+Reacticore|clreacticore.html
+Real Flight Simulator|clrealflightsim.html
+Recoil|clrecoil.html
+Red Ball 4|clRedBall4.html
+Red Handed|clredhanded.html
+Red Tie Runner|clredtierunner.html
+Red vs. Blue|clredvsblue2.html
+Red vs. Blue War|clredvsbluewar.html
+Resizer|clresizer.html
+Retro Bowl|clretrobowl.html
+Retro Bowl College|clretrobowlcollege.html
+Retro Highway|clretrohighway.html
+Retro Ping Pong|clretropingpong.html
+Return to Riddle School|clreturntoriddleschool.html
+Revolution Idle|clrevolutionidle.html
+Rhythm Hell|clrh.html
+Riddle Middle School|clriddlemiddleschool.html
+Rise Higher|clrisehigher.html
+Roulette Hero|clroulettehero.html
+Robby Blocks|clluckyblocks.html
+Rocket League|clrocketleague.html
+Rocket Goal.io|clrocketgoal.io.html
+Rocketpult|clrocketpult.html
+Rocket Soccer Derby|clrocketsoccerderby.html
+Rodha|clrodha.html
+Roller Baller|clrollerballer.html
+Rolling Sky|clrollingsky.html
+Rolly Vortex|clrollyvortex.html
+Rooftop Snipers|clrooftopsnipers.html
+Rooftop Snipers 2|clrooftopsnipers2.html
+Rooftop Run|clrooftoprun.html
+Room Clicker|clroomclicker.html
+Roulette Knight|clrouletteknight.html
+Run 3|clrun3.html
+Run from Withered Fox|clrunfromwitheredfox.html
+Running Fred|clrunningfred.html
+Russian Buckshot Roulette|clrussianbuckshot.html
+Russian Car Driver|clrussiancardriver.html
+Russian Sandbox|clrussiansandbox.html
+Sandbox City|clsandboxcity.html
+Sandboxels|clsandboxels.html
+Sandtris|clsandtris.html
+Saihate Station|clsaihatestation.html
+Santy|clsanty.html
+Satryn|clsatryn.html
+Saul Goodman Run|clsaulgoodmanrun.html
+Sausage Flip|clsausageflip.html
+Scale The Depths|clscalethedepths.html
+Scarlet Shift|clscarletshift.html
+Scary Teacher 3D|clscaryteacher3d.html
+Scary Shawarma|clscaryshawarma.html
+Schoolboy Runaway|clschoolboyrunaway.html
+Scrap Metal 3|clscrapmetal3.html
+Scuba Bear|clscubabear.html
+Sea Mongrel|clseamongrel.html
+Self|clself.html
+Serenitrove|clserenitrove.html
+Seven Days In Purgatory|clsevendays.html
+Silk Melody|clsilkmelody.html
+Shift|clshift.html
+Shift 2|clshift2.html
+Shift at Midnight|clshiftatmidnight.html
+Shogun Showdown|clshogunshowdown.html
+Short Life|clshortlife.html
+Shot Out 4|clshotout4.html
+Shredmill|clshredmill.html
+Shredsauce|clshredsauce.html
+Side Effects|clsideeffects.html
+Silhouette Showdown|clsiloshowdow.html
+Six Ways to Die|clsixwaystodie.html
+Skibidi in the Backrooms|clskibidiinthebackrooms.html
+Skibidi Shooter|clskibidishooter.html
+Skinwalker|clskinwalker.html
+Sky Race 3D|clskyrace-3d.html
+Sky Riders|clSkyRiders.html
+Slenderman: The 8 Pages|clslenderman.html
+Slendy Tubbies|clslendytubbies.html
+Slice It All|clsliceitall.html
+Slice Master|clslicemaster.html
+Slide in the Woods|clslideinthewoods.html
+Slipways|clslipways.html
+Slither.io|clslitherio.html
+Slope|clslopeplus.html
+Slope 2 Player|clslope2player.html
+Slope 3|clslope3.html
+Slot or Not|clslotornot.html
+Slow Roads|clslowroads.html
+Smash Karts|clsmashkartsworking.html
+Shadow Courier|clshadowcourier.html
+Shape Transform|clshapetransform.html
+Snakelike|clsnakelike.html
+Sniper Shot|clsnipershot.html
+Sniper v2|clsniperv2.html
+Snowball.io|clsnowballio.html
+Snowboard Obby|clsnowboard.html
+Snow Rider 3D|clsnowrider.html
+Snow Road|clsnowroad.html
+Soccer Bros|clsoccerbros.html
+Soccer Random|clsoccerrandomgood.html
+Soda Simulator|clsodasimulator.html
+Solar Sandbox|clsolarsandbox.html
+Solar Smash|clsolarsmash.html
+Sonic 1 Mobile|clsonic1mobile.html
+Sonic 2 Mobile|clsonic2mobile.html
+Sonic And The Falling Star|clsonicandfallingstar.html
+Sonic Robo Blast 2|clsonicroboblast2.html
+Sonic CD|clsoniccdmobile.html
+Sonic Mania Plus|clsonicmaniaplus.html
+Sonic Revert|clsonicrevert.html
+Sort The Court|clsortthecourt.html
+Soul Jumper|clsouljumper.html
+Spacebar Clicker|clspacebarclicker.html
+Space Company|clspacecompany.html
+Space Wars BattleGround|clspacewarsbattleground.html
+Space Waves|clspacewaves.html
+Speed Per Click|clspeedperclick.html
+Speed Stars|clspeedstars.html
+Spelunky Classic HD|clspelunky.html
+Spiral Roll|clspiralroll.html
+Sprinter|clsprinter.html
+Sprunked|clsprunked.html
+Sprunki|clsprunki.html
+Sprunki Clicker|clsprunkiclicker.html
+Sprunki Pyra Mixed|clsprunkipyramixed.html
+Squid Playground|clsquidplayground.html
+Stackball.io|clstackballio.html
+Stacktris|clstacktris.html
+State.io|clstateio.html
+Station 141|clstation141.html
+Station Meltdown|clstationmeltdown.html
+Station Saturn|clstationsaturn.html
+Steal A Brainrot|clsupitdept.html
+Summer Rider 3D|clsummerrider.html
+Steal A Brainrot Duel|clsabduel.html
+Stealth Master|clstealthmaster.html
+Steel Surge Revolution|clsteelsurge.html
+Steep Descent|clsteepdescent.html
+Stick Archers Battle|clstickarchersbattle.html
+Stick Defenders|clstickdefenders.html
+Stick Duels: The War|clsd-wars.html
+Stick Fighter|clstickfighter.html
+Stick With It|clstickwithit.html
+Stickjet Challenge|clstickjetchallenge.html
+Stickman and Guns|clstickmanandguns.html
+Stickman Clash|clstickmanclash.html
+Stickman Duel|clstickmanduel.html
+Stickman GTA City|clstickmangtacity.html
+Stickman Hook|clstickmanhook.html
+Stickman Kingdom Clash|clStickmanKingdomclash.html
+Stickman Kombat 2D|clstickmankombat2d.html
+Stick Merge|clstickmerge.html
+Stick Slasher|clstickslasher.html
+Stone Grass Mowing Simulator|clgrassmowing.html
+Strikeforce Kitty|clsfk.html
+Strikeforce Kitty 2|clsfk2.html
+Strikeforce Kitty Last Stand|clsfklaststand.html
+Strikeforce Kitty League|clsfkleague.html
+Striker Dummies|clstrikerdummies.html
+Subway Surfers: Barcelona|clsubwaysurfersbarcelona.html
+Subway Surfers: Beijing|clsubwaysurfersbeijing.html
+Subway Surfers: Berlin|clsubwaysurfersberlin.html
+Subway Surfers: Buenos Aires|clsubwaysurfersbuenosaires.html
+Subway Surfers: Havana|clsubwaysurfershavana.html
+Subway Surfers: Houston|clsubwaysurfershouston.html
+Subway Surfers: Iceland|clsubwaysurfersiceland.html
+Subway Surfers: London|clsubwaysurferslondon.html
+Subway Surfers: Mexico|clsubwaysurfersmexico.html
+Subway Surfers: Miami|clsubwaysurfersmiami.html
+Subway Surfers: Monaco|clsubwaysurfersmonaco.html
+Subway Surfers: New Orleans|clsubwaysurfersneworeleans.html
+Subway Surfers: St. Petersburg|clsubwaysurfersstpetersburg.html
+Subway Surfers: Winter Holiday|clsubwaysurferswinterholiday.html
+Subway Surfers: Zurich|clsubwaysurferszurich.html
+Sugary Spire UNHAM|clsugaryspire.html
+Suika Game|clsuika.html
+Suika Pico|clsuikapico.html
+Super Car Rush|clsupercarrush.html
+Supercold|clsupercold.html
+Super Dark Deception|clsuperdarkdeception.html
+Super Drome Bugs|superdromebugs.html
+Super Falling Fred|clsuperfallingfred.html
+Superhot|clsuperhot.html
+Superhot Line Miami|clsuperhotlinemiami.html
+Super Kid Adventure|clsuperkidadventure.htm
+Super Liquid Soccer|clsuperliquidsoccer.html
+Super Mario 63 Redux|clsm63redux.html
+Super Mario 64 (WebGL)|clmario64webgl.html
+Super Mario Bros|clsupermariobros.html
+Super Mario Bros. Remastered|clsmbremastered.html
+Super Mario Construct|clsmc.html
+Super Momos Crushers|clmomoscrushers.html
+Super Monkey Ball 1 & 2|clsmb12.html
+Super Oliver World|clsuperoliverworld.html
+Super Onion Boy 2|clsuperonionboy2.html
+Super Pickleball Adventure|clsuperpickleballadventure.html
+Super Santa Kicker|clsupersantakicker.html
+Super Santa Kicker 2|clsupersantakicker2.html
+Supreme Duelist|supremeduelist.html
+Supreme Duelist 2019|clsupremeduelist2019.html
+Survev.io|clsurvevio.html
+Survival Race v2|clsurvivalracev2.html
+Survivor.io|clsurvivorio.html
+Sushi Unroll|clsushiunroll.html
+Switch|clswitch.html
+Switchblade|clswitchblade.html
+Swordfight|clswordfight.html
+Taco Stand|cltacostand.html
+Table Tanks|cltabletanks.html
+Table Tennis World Tour|cltabletennisworldtour.html
+Tag|cltag-.html
+Tail of The Dragon|cltailofthedragon.html
+Taisei Project|cltaisei.html
+Tall.io|cltallio.html
+Tank Pixel|cltankpixel.html
+Tanuki Sunset|cltanukisunset.html
+Tap Road|cltaproad.html
+Telephone Trouble|cltelephonetrouble.html
+Temple Run 2|cltemplerun2.html
+TEMPOVERDOSE|cltempoverdose.html
+Terra|clterra.html
+Territorial.io|clterritorialio.html
+Tzusuki Maze|cltzusukimaze.html
+The Dude|clthedude.html
+The Man From The Window|clthemaninthewindow.html
+There is No Game|clthereisnofile.html
+Thermomorph|clthermomorph.html
+The Sun and Moon|clsunandmoon.html
+The Visitor|clvisitor.html
+They Are Coming|cltheyarecoming.html
+Thief Puzzle|thiefpuzzle.html
+Three Goblets|clthreegoblets.html
+Throw a Potato|clthrowapotato.html
+Throw a Potato Again|clthrowapotatoagain.html
+Thwack|clthwack.html
+Time Shooter 2|cltimeshooter2.html
+Time Shooter 3|cltimeshooter3.html
+Timewarriors|cltimewarriors.html
+Tiny Fishing|cltinyfishing.html
+To a Starling|cltoastarling.html
+Toasterball|cltoasterball.html
+Tomb of the Mask|cltotm.html
+Tomorrow And Yesterday|cltommorowandyesterday.html
+Top Speed Racing 3D|cltopspeedracing3d.html
+Tower Blocks|cltowerblocks.html
+Tower Crash 3D|cltowercrash3d.html
+Tower Wizard|cltowerwizard.html
+Townscraper|cltownscraper.html
+Trace|cltrace.html
+Traffic Jam 3D|cltrafficjam3d.html
+Trapped With Jester|cltrappedwithjester.html
+Trap The Cat|cltrapthecat.html
+Treacherous Trials|cltrechoroustrials.html
+Treacherous Trials Part 2|cltrechoroustrialspart2.html
+Trees Hate You|cltreeshateyou.html
+Triachnid|cltriachnid.html
+Trivia Crack|cltriviacrack.html
+Tube Jumpers|cltubejumpers.html
+Tung Tung Basics|cltungtungbasics.html
+Tung Tung Tung Sahur Obby|cltungtungtungsahurobby.html
+Tunnel Rush|cltunnelrush.html
+Better Tunnel Rush|cltunnelrushbetter.html
+Two Ball 3D|cltwoball3d.html
+Ufo Swamp Odyssey|clufoswampoddysey.html
+Ultimate Car Driving Simulator|clUltimatecardrivingsimulator.html
+Ultrakill (Buggy)|clultrakill.html
+Other Car Driving Simulator|clucds.html
+Uncanny Cat Golf|cluncannycatgolf.html
+Underneath|clunderneath.html
+Undertale: Last Breath|clundertalelb.html
+Undertale Yellow|clundertaleyellow.html
+Unfair Undyne|clunfairundyne.html
+Unicycle Hero|clunicyclehero.html
+Unitres Dreams|clunitresdreams.html
+Uno|cluno.html
+Uno No Mercy|clunonomercy.html
+Untime|cluntime.html
+UpSlash|clupslash.html
+Vampire Survivors|clvampiresurvivors.html
+Vapor Trails|clvaportrails.html
+Vex 3|clvex3.html
+Vex 3 Xmas|clvex3xmas.html
+Vex 4|clvex4.html
+Vex 5|clvex5.html
+Vex 6|clvex6.html
+Vex 7|clvex7.html
+Vex 8|clvex8.html
+Vex Challenges|clvexchallenges.html
+Vex X3M|clvexx3m.html
+Vex X3M 2|clvexx3m2.html
+Villager|clvillager.html
+Vincent Mansion Of The Dead|clvincentmansionofthedead.html
+Volleyball Challenge|clvollyballchallenge.html
+Volley Random|clvolleyrandom.html
+Vortex|clvortex.html
+Wacky Flip|clwackyflip.html
+War the Knight|clwartheknight.html
+Waterpool.io|clwaterpoolio.html
+Waterworks|clwaterworks.html
+Wave Dash|clwavedash.html
+Wave Road 3D|clwaveroad3d.html
+Wave Run|clwaverun.html
+We Become What We Behold|clwebecomewhatwebehold.html
+Webfishing|clwebfishing.html
+Web Dashers|clwebdashers.html
+Wermhole|clwermhole.html
+Wheelie Bike|clwheeliebike.html
+Winter Falling|clwinterfalling.html
+Witchcraft TD|clwitchcrafttd.html
+Wolfenstein 3D Emscripten|clwolfenstein.html
+Woodworm|clwoodworm.html
+Wordle|clwordle.html
+Wrassling|clwrassling.html
+Wrestle Bros|clwrestlebros.html
+Xor|clxor.html
+Yandere Simulator|clyanderesimulator.html
+Yohoho.io|clyohohoio.html
+Your Turn To Die|clyourturntodie.html
+You vs. 100 Skibidi|clyouvs100skibidi.html
+Yume Nikki|clyumenikki.html
+Zen Word|clzenword.html
+Zombie Road|clzombieroad.html
+Zombie Rush|clzombierush.html
+Zombotron Reboot|clzombotronreboot.html
+Zrist|clzrist.html
+
+## Eaglercraft
+Archimedes Client|clarchimedesclient.html
+Astra Client|clastrawasm.html
+Ayuncraft|clayuncraft.html
+CoderCraft|clcodercraft.html
+EB Client|clebclient.html
+Eagler Forge (Mods)|cleaglerforge.html
+Eaglercraft Lite|cleaglercraftlite.html
+Eaglercraft Magic|Cleaglercraftmagic.html
+Eaglercraft Nebula|cleaglercraftnebula.html
+Eaglercraft Odd Future|cloddfuture.html
+Eaglercraft Shadow|cleaglercraftshadow.html
+Eaglercraft Sky|cleaglercraftsky.html
+Eaglercraft Tech|cleaglercrafttech.html
+Eaglercraft Ultimate|cleaglerultimate.html
+Eaglercraft Winston Horror|clwinston.html
+Explore Modpack|clexploremodpack.html
+Fuschia X|clfuschiax.html
+GX Client|clGXClient.html
+JMO Client|cljmoclient.html
+Justin Client|cljustinclient.html
+Kerosene Client|clkeroseneclient.html
+Kozmo Client|clkozmoclient.html
+Lambda Client|cllambdaclient.html
+Lumine Client|cllumineclient.html
+Mega Client|clmegaclient.html
+Modern Client|clmodernclient.html
+Prismarine Client|clprismarine.html
+Minecraft 1.11.2|EaglercraftZ_1.11.2.html
+Minecraft 1.12.2|Eaglercraft1.12.html
+Minecraft 1.5.2|eaglercraft.1.5.2.html
+Minecraft 1.7.3|Eaglercraft-Beta-1.7.3-Offline.html
+Minecraft 1.8.8 (EaglercraftX)|EaglercraftX 1.8.8(u29).html
+Minecraft 1.9|EaglercraftL_1.9_v0_7_0_Offline_Signed.html
+Minecraft Alpha 1.2.6|Eaglercraft-Alpha-1.2.6-Offline.html
+Minecraft Beta 1.3|Eaglercraft-Beta-1.3-Offline.html
+Minecraft Indev|Eaglercraft-Indev-Offline.html
+Nit Client|clnitclient.html
+Nova Client|clnovaclient.html
+Pi Client|clpiclient.html
+Pixel Client|clpixel.html
+Precision Client|clprecisionclient.html
+Prism Client|clprismclient.html
+Reborn Client|clrebornclient.html
+Resent Client|clresentclient.html
+Skyfactory|clskyfactory.html
+Solar Client|clsolar.html
+Starlike Client|clstarlike.html
+Tuff Client|cltuffclient.html
+UT15 Tuff Client|clut15tuffclient.html
+UwU Client|cluwuclient.html
+Wurst Client|clwurst.html
+Zeta Client|clzetaclient.html
+
+## FNF
+Friday Night Funkin|clfridaynightfunkin.html
+Friday Night Funkin (Godot Web-Port)|clfnfgodot.html
+Animation vs Friday Night Funkin'|clfnfanimation.html
+Friday Night at the Pizza Tower|clfnffnatpt.html
+FNF vs Anemones Fall|clanemonesfall.html
+FNF After The Week|claftertheweek.html
+FNF Antipathy|clantipathy.html
+FNF vs Aflac|claflac.html
+FNF Asdf's Endless Muffin Time|clfnfasdf.html
+FNF vs Asgore|clvsasgore.html
+FNF vs Bill Cipher|clbill.html
+FNF Blackout vs Raven|clblackout.html
+Friday Night Crunchin'|clfnfcrunchin.html
+FNF Claymore|clclaymore.html
+FNF Dead Air|cldeadair.html
+Friday Night Dustin'|clfnfdustin.html
+FNF DustTale Remastered v2.0|clfnfdusttale.html
+FNF Akage|clfnfakage.html
+FNF Baddies Nightmare|BaddiesNightmare.html
+FNF Ben Drowned|BenDrowned.html
+FNF vs Bunzo Bunny|clbunzobunny.html
+FNF Below The Depths|clfnfbelowdepths.html
+FNF Blourple Guy (Ourple Guy B-Sides)|clblourpleGuy.html
+FNF B-Sides|clfnfbside.html
+FNF B-Sides Redux|clfnfbsidesredux.html
+FNF Banbuds Interview|clbanbuds.html
+FNF Sayori's Notebook|clsayorisnotebook.html
+FNF vs Silver|clsilver.html
+FNF Candy Carrier Chaos|clfnfcandycarrier.html
+FNF vs Camellia|clcamilla.html
+FNF Cartoon Frenzy|CartoonFrenzy.html
+FNF CreepyPasta but Everyone Sings it|clcreepypastabuteveryonesingsit.html
+Creepy Night Funkin|clcreepynightfunkin.html
+FNF Chaos Nightmare (Fleetway)|clfnffleetway.html
+FNF Crimson Madness|clcrimsonmadness.html
+FNF Classified|Classified.html
+FNF Creepy Internet Stories|clcreepyinternetstories.html
+FNF Clover Cave In|clclover.html
+FNF Confronting Yourself FF Mix|ConfrontingYourself.html
+FNF Corrosion|clfnfcorrosion.html
+FNF Corruption Reimagined|clfnfcorruptionreimagined.html
+FNF Cycles Encore|clfnfcyclesencore.html
+FNF Doki Doki Takeover Plus!|clfnfdokitakeoverplus.html
+FNF Drop and Roll, but Playable|clfnfdropandroll.html
+FNF D-Sides|clfnfdsides.html
+FNF Eteled System Overload|EletedSystemOverload.html
+FNF Flipped Out: vs Flippy|clfnfflippedout.html
+FNF vs Origami King|clorigamiking.html
+FNF Funkin For Hire Dorkly Sonic|FunkinForHire.html
+FNF Freakpostor|clfnffreakpostor.html
+FNF Family Guy Corrupted|clfamilyguycorrupted.html
+FNF Jurassic Park Breakout|cljurassic.html
+FNF GameBreaker Bundle|clfnfgamebreakerbundle.html
+FNF GF Mode|clfnfgfmode.html
+FNF HD|clfnfhd.html
+FNF Hit Single Real|clhitsinglereal.html
+FNF HORKGLORPGLOOP|clfnfhorkglorpgloop.html
+FNF Impostor B3 Remixed|ImpostorB3Remixed.html
+FNF Impostor Expansion|ImpostorExpansion.html
+FNF Impostor Getaway|ImpostorGetaway.html
+FNF Impostor Tainted Fate|ImpostorTaintedFate.html
+FNF Impostor White Parasite|ImpostorWhiteParasite.html
+FNF Indie Cross|clfnfindiecross.html
+FNF Infernal Bout|clfnfinfernalbout.html
+FNF Insanity Psychosis Remake|InsanityPsychosisRemake.html
+FNF Iron Lung Recreation|clfnfironlung.html
+FNF Jeffy's Endless Aethos|clfnfaethos.html
+FNF Jeffy's Infinite Irida|clfnfinfiniteirida.html
+FNF Late Night City Tales|clfnfcitytales.html
+FNF Lime Impostor|LimeImpostor.html
+FNF Mami|clmami.html
+FNF Monster Swing|clmonsterswing.html
+FNF Maginage Matches|clfnfmaginagematches.html
+FNF Mandela Catalogue|clmandela.html
+FNF Mix|clfunkinmix.html
+FNF Mario's Madness|clmariomadness.html
+FNF Mario's Madness D-Side|clfnfmariomadnessdside.html
+FNF Matt Voiid Sides|clfnfvoiidsides.html
+FNF McMadness vs Ronald McDonald|clfnfmcmadness.html
+FNF Minus Eteled|MinusEteled.html
+FNF MOBMOD|clfnfmobmod.html
+FNF Mungus Madness|MungusMadness.html
+FNF Neo|clfnfneo.html
+FNF Nonsense|clvsnonsense.html
+FNF Omnipresent|clomnipresent.html
+FNF Outnumbered|cloutnumbered.html
+FNF Parasite Origins: Blackness|ParasiteOriginsBlackness.html
+FNF Pastel Impostor|PastelImpostor.html
+FNF Pibby: Apocalypse|clpibbyapocalypse.html
+FNF vs Pibby Corrupted|clfnfpibbycorrupted.html
+FNF Piggyfied|clfnfpiggyfield.html
+FNF Pluto's Reprisal Part 1|clfnfplutoshi.html
+FNF Porifera Atoll|clfnfporifera.html
+FNF Prey HD|clfnfpreyhd.html
+FNF Prey Good Future|clfnfpreygoodfuture.html
+FNF QT Rewired|clqtrewired.html
+FNF R4ge-Qu1t|clfnfr4gequ1t.html
+FNF Remnants|clfnfremnants.html
+FNF Rev-Mixed|clfnfrevmixed.html
+FNF Rhythmic Revolution|clfnfrhythmicrev.html
+FNF Rotten Smoothie|clfnfrottensmoothie.html
+FNF Sarvente's Mid-Fight Masses|clfnfmidfight.html
+FNF Secret Histories|SecretHistories.html
+FNF Seeks Cool Deltarune|clfnfseekscooldeltarune.html
+FNF Self-Paced, but Playable|clfnfselfpaced.html
+FNF Shaggy x Matt|clfnfshaggyxmatt.html
+FNF Shucks V2|clfnfshucks-v2.html
+FNF SMB Funk Mix: Game Over|clsmbgameover.html
+FNF Soft|clfnfsoft.html
+FNF Sonic & Tails Gets Trolled 2.0|clfnftailsgetstrolled.html
+FNF Sonic Mega CD|clmegacd.html
+FNF Spirits Of Hell v2|clfnfsohv2.html
+FNF Starlight Mayhem|clfnfstarlightmayhem.html
+FNF Steven Universe Mini Mod Pack|clfnfsteveuniverseminimodpack.html
+FNF Sunday Night Suicide v2|SundayNightSuicidev2.html
+FNF The Brighterside|clfnfbrighterside.html
+FNF The Deceiver|clfnfdeciever.html
+FNF The Holiday Mod|clfnfholiday.html
+FNF The Walten Files Mod|clfnfwaltenfiles.html
+FNF Too Slow: Fran Mix|clfnftooslowfran.html
+FNF Trepidation|clfnftrepidation.html
+FNF TwiddleFinger|clfnfTWIDDLEFINGER.html
+FNF Longest Solo Ever|clLSE.html
+FNF Undertale|clfnfundertale.html
+FNF Unknown Suffering Reanimated|UnknownSufferingReanimated.html
+FNF Wednesday's Infidelity|clfnfwednesday-infedility.html
+FNF Vloo Guy (Ourple Guy D-Sides)|VlooGuy.html
+FNF vs Accelerant Hank|clfnfhank.html
+FNF vs A.G.O.T.I|clfnfagoti.html
+FNF vs Annie|clfnfannie.html
+FNF vs Bambi: Strident Crisis|clfnfstridentcrisis.html
+FNF vs BFDI 26|clfnfbfdi26.html
+FNF vs Camellia RUDE BUSTER|clfnfcamelliarudeblaster.html
+FNF vs Chara|clfnfchara.html
+FNF vs CoryXKenshion|clfnfcory.html
+FNF vs Cyber Sensation|clcybersensation.html
+FNF vs Cyrix: Binary Breakdown|clfnfbinarybreakdown.html
+FNF vs Dave and Bambi: Golden Apple Edition|clfnfgoldenapple.html
+FNF vs Five Nights at Freddy's|clfnffnaf1.html
+FNF vs Five Nights at Freddy's 2|clfnffnaf2.html
+FNF vs FNAF 3|clfnffnaf3.html
+FNF vs Garcello|clgarcello.html
+FNF vs Hatsune Miku|clfnfmiku.html
+FNF vs Herobrine: Blocky Myths|clfnfherobrine.html
+FNF vs Herobrine Reborn|clherobrinereborn.html
+FNF vs Hex|clfnfhex.html
+FNF vs Hypno Lullaby|clfnfhypnoslullaby.html
+FNF vs Impostor v3|clfnfimposter3.html
+FNF vs Impostor v4|clfnfimposterv4.html
+FNF vs Impostor: Black Betrayal|clfnfblackbetrayal.html
+FNF vs Impostor: Desolation|clfnfdesolation.html
+FNF vs KAPI|clkapi.html
+FNF vs Ourple Guy v2|clourpleguy.html
+FNF vs Pokepasta Perdition|clfnfpokepastaperdition.html
+FNF vs QT|clfnfqt.html
+FNF vs RetroSpecter|clfnfretrospecter.html
+FNF vs Riddler|clriddler.html
+FNF vs Rewrite|clfnfrewrite.html
+FNF vs Rewrite Round 2|clrewriteround2.html
+FNF vs Shaggy|clshaggy.html
+FNF vs Shaggy (4 Keys)|clfnfshaggy4keys.html
+FNF vs Sky|clfnfsky.html
+FNF vs Sky Reborn|clfnfskyreborn.html
+FNF vs Sonic.exe 3.0/4.0|clfnfsonicexe4.html
+FNF X-Event|clxevent.html
+FNF vs Tabi v2 Restored|clfnfvstabi.html
+FNF vs Tabi Revived|cltabi.html
+FNF vs Tricky|clfnftricky.html
+FNF vs Void|clfnfvoid.html
+FNF vs Whitty|clfnfwhitty.html
+FNF vs Yokai GF: Japan Creepypasta|clfnfjapcreepypasta.html
+FNF vs Zardy|clfnfzardy.html
+FNF Heartbreak Havoc (vs Sky: Redux)|clfnfheartbreakhavoc.html
+FNF Hotline 024|clfnfhotline.html
+FNF Horror Mouse|clhorrormickeymouse.html
+Mario FNF Port|clfnfmarioport.html
+Wii Funkin: vs Matt v2|clmattv2.html
+Wii Funkin: vs Matt v3|clmattv3.html
+
+## Flash
+Ruffle Emulator|clruffle.html
+10 Bullets|cl10bullet.html
+10 More Bullets|cl10morebullets.html
+1 On 1 Soccer|cl1on1soccer.html
+1 On 1 Tennis|cl1v1tennis.html
+3 Pandas|cl3pandas.html
+3 Pandas Night|cl3pandasnight.html
+3 Pandas Brazil|cl3pandasbrazil.html
+3 Pandas Fantasy|cl3pandasfantasy.html
+3 Pandas Japan|cl3pandasjapan.html
+3 Slices 2|cl3slices2.html
+40xEscape|cl40escape.html
+60 Seconds Burger Run|cl60secondsburgerrun.html
+60 Seconds Santa Run|clsantarun.html
+8 Ball Pool|cl8ballpool.html
+Abandoned|clthanksforremindingmeihadtofixthis.html
+Abandoned 3|clabandoned32.html
+Absolute Madness|clabsolutemadness.html
+Ace Gangster Taxi|clacegangstertaxi.html
+Achievement Unlocked|clachievementunlocked.html
+Achievement Unlocked 2|clachievmentunlocked2.html
+Achievement Unlocked 3|clachievmentunlocked3.html
+Achilles|clachillies1fr.html
+Achilles 2|clachillies2.html
+Age of War|clageofwar.html
+Age of War 2|clageofwar2.html
+A Koopa's Revenge|clkoopasrevenge.html
+A Koopa's Revenge 2|clakoopasrevenge2.html
+Alien Hominid|clalienhominid.html
+Alien Transporter|clalientransporter.html
+Amigo Pancho|clamigopancho.html
+Amigo Pancho 2|clamigopancho2.html
+Amigo Pancho 3|clamigopancho3.html
+Amigo Pancho 4|clamigopancho4.html
+Amigo Pancho 5|clamigopancho5.html
+Amigo Pancho 6|clamigopancho6.html
+Amigo Pancho 7|clamigopancho7.html
+Ambulance Rush|clambulencerush.html
+Angry Birds Space|clangry-birdsspace.html
+Apple Shooter|clappleshooter.html
+Apple Worm|clappleworm.html
+
+##Retro
+Donkey Kong|cldonkeykong.html
+Marvel Superheroes Arcade|clMarvelSuperHeroesArcade.html
+Simpsons Arcade|clsimpsonsarcade.html
+Frogger Arcade|clfroggerarcade.html
+Space Invaders 95|clspaceinvade95.html
+Ace Attorney Miles Edgeworth|claceattorneymilesedgeworth.html
+Cooking Mama|clcookingmama.html
+Kingdom Hearts Days|clkingdomheartsdays.html
+Lego Batman|cllegobatman.html
+Advance wars|cladvancewars.html
+Crash Bandicoot|clcrashbandicoot.html
+Dragon Ball Advanced|cldragonballadvanced.html
+Max Payne|clmaxpayne.html
+Chrono Trigger|clchronotrigger.html
+Contra|clcontra3.html
+Killer Instinct|clkillerinstinct.html
+Mortal Kombat|clmortalkombat.html
+Starfox|clstarfox.html
+Super Mario RPG|clsupermariorpg.html
+Super Mario World|clsupermarioworld.html
+Super Mario World 2|clsupermarioworld2.html
+Super Metroid|clsupermetroid.html
+
+
+
+
+
+
+`;
+
+/* ---------- parse ---------- */
+const games=[];
+(function(){let cat='Games';for(const line of RAW.split('\n')){const t=line.trim();if(!t)continue;if(t.startsWith('##')){cat=t.slice(2).trim();continue}const i=t.lastIndexOf('|');if(i<1)continue;const name=t.slice(0,i).trim(),file=t.slice(i+1).trim(),f=(name.match(/[A-Za-z0-9]/)||['#'])[0].toUpperCase();games.push({id:cat+'/'+file,name,file,cat,letter:/[0-9]/.test(f)?'0-9':f})}})();
+
+/* ---------- helpers + settings ---------- */
+const $=id=>document.getElementById(id),el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const S={h:118,name:'GameBox',perf:matchMedia('(prefers-reduced-motion:reduce)').matches?'low':'high',sound:true,sort:'az',folders:[],favs:[],recent:{},img:{}};
+try{Object.assign(S,JSON.parse(localStorage.getItem('gh2')||'{}'));if(!S.favs.length)S.favs=JSON.parse(localStorage.getItem('gh-favs')||'[]')}catch(e){}
+if(S.name==='Game Hub')S.name='GameBox';const save=()=>{try{localStorage.setItem('gh2',JSON.stringify(S))}catch(e){}};
+function applyTheme(){const r=document.documentElement.style;r.setProperty('--a',`hsl(${S.h} 75% 45%)`);r.setProperty('--a2',`hsl(${S.h} 80% 62%)`);const k=$('kn');if(k){const a=S.h*Math.PI/180;k.style.left=85+66*Math.sin(a)+'px';k.style.top=85-66*Math.cos(a)+'px'}}
+function applyName(){document.title=S.name;$('nm').textContent=S.name;$('av').textContent=(S.name[0]||'G').toUpperCase()}
+function applyPerf(){document.body.classList.toggle('pm',S.perf==='med');document.body.classList.toggle('pl',S.perf==='low')}
+
+/* ---------- synthesized sound ---------- */
+let ac,lastTick=0;
+function tone(f,d,o={}){if(!S.sound)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();const t=ac.currentTime+(o.w||0),os=ac.createOscillator(),g=ac.createGain();os.type=o.t||'sine';os.frequency.setValueAtTime(f,t);if(o.to)os.frequency.exponentialRampToValueAtTime(o.to,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(o.v||.07,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);os.connect(g).connect(ac.destination);os.start(t);os.stop(t+d+.03)}catch(e){}}
+const AU={};['startup','welcome','open','close','click','select','complete'].forEach(k=>{const a=new Audio(k+'.mp3');a.preload='auto';AU[k]=a});
+let AC=null;const BUF={},LEAD={open:.21,close:.21};
+try{AC=new(window.AudioContext||window.webkitAudioContext)();['click','open','close','welcome','select','complete'].forEach(k=>fetch(k+'.mp3').then(r=>r.arrayBuffer()).then(b=>AC.decodeAudioData(b)).then(d=>BUF[k]=d).catch(()=>{}));['pointerdown','keydown'].forEach(t=>addEventListener(t,()=>{AC&&AC.state!=='running'&&AC.resume()},{capture:true}))}catch(e){}
+let inSide=0;const play=(k,v=1)=>{if(!S.sound)return;if(k==='click'&&inSide)k='select';try{if(AC&&BUF[k]){if(AC.state!=='running')AC.resume();const s=AC.createBufferSource(),g=AC.createGain();s.buffer=BUF[k];g.gain.value=v;s.connect(g).connect(AC.destination);s.start(0,LEAD[k]||0);return}const a=k==='click'?AU[k].cloneNode():AU[k];a.volume=v;a.currentTime=LEAD[k]||0;a.play().catch(()=>{})}catch(e){}};
+const sfx={tick:()=>{const n=performance.now();if(n-lastTick<45)return;lastTick=n;play('click',.7)},sel:()=>play('click'),back:()=>play('click'),tog:()=>play('click',.8),welcome:()=>play('welcome'),open:()=>play('open'),shut:()=>play('close')};
+
+/* ---------- generated cover art (cached) ---------- */
+const MO=[[/angry|bird|chick|duck|penguin|flappy/i,'🐦'],[/craft|mine|block/i,'⛏️'],[/basket|dunk|hoop/i,'🏀'],[/soccer|football|goal|cup|fifa|penalty/i,'⚽'],[/car|race|racing|drift|moto|drive|rally|truck|parking|bike/i,'🏎️'],[/run|dash|jump|parkour|subway/i,'🏃'],[/zombie|dead|horror|night|backroom|nightmare|fnaf|baldi|scary|evil|death|dark/i,'🧟'],[/space|sky|alien|galaxy|star|rocket|planet|moon/i,'🚀'],[/shoot|gun|sniper|war|battle|strike|caliber|army|shell|tank/i,'🔫'],[/pool|pinball|8 ball|billiard/i,'🎱'],[/2048|puzzle|maze|tetris|chess|sudoku|word|match|solitaire|mahjong/i,'🧩'],[/tycoon|idle|clicker|capital|cookie|money|empire|bank/i,'💰'],[/tower|defen[cs]e|castle|kingdom/i,'🏰'],[/fish|ocean|aqua|water|swim|sea|shark/i,'🐟'],[/cat|dog|pig|panda|bear|frog|animal|bunny|monkey|pet/i,'🐾'],[/fire|burn|dragon|lava|bomb/i,'🐉'],[/ninja|sword|fight|knife|samurai|kick|box|ball/i,'⚔️'],[/golf/i,'⛳'],[/ski|snow|ice|winter|cold/i,'❄️'],[/farm|plant|garden|apple|fruit|cook|pizza|burger|cake|food/i,'🌱'],[/escape|room|mystery|detective|crime|police/i,'🔦'],[/music|dance|beat|rhythm|piano|guitar/i,'🎵'],[/fnf|funkin|friday/i,'🎤']];
+const CE={Eaglercraft:'⛏️',FNF:'🎤',Flash:'🎞️',Games:'🎮'},cache=new Map();
+function initials(n){const w=n.replace(/[^A-Za-z0-9 ]/g,'').split(/\s+/).filter(Boolean);return((w[0]||'?')[0]+((w[1]||'')[0]||'')).toUpperCase()}
+const IMG={/* 'Game name':'https://example.com/cover.jpg', */};
+function titleSvg(name){const ws=name.trim().split(/\s+/);let ls=[],c='';for(const w of ws){if(!c)c=w;else if((c+' '+w).length<=11)c+=' '+w;else{ls.push(c);c=w}}if(c)ls.push(c);ls=ls.flatMap(l=>l.length>13?l.match(/.{1,11}/g):[l]);if(ls.length>5){ls=ls.slice(0,5);ls[4]=ls[4].slice(0,9)+'…'}
+const mx=Math.max(...ls.map(l=>l.length)),fs=Math.max(15,Math.min(32,Math.floor(172/(mx*.6)),Math.floor(168/(ls.length*1.2)))),y0=100-(ls.length-1)*fs*1.1/2+fs*.34;
+return ls.map((l,i)=>`<text x="100" y="${(y0+i*fs*1.1).toFixed(1)}" font-size="${fs}" font-weight="800" text-anchor="middle" fill="#fff" stroke="#0005" stroke-width="3" paint-order="stroke" font-family="Segoe UI,Arial,sans-serif">${esc(l)}</text>`).join('')}
+function art(g,bare){const im=IMG[g.name]||S.img[g.id];if(im)return im;const ck=g.id+(bare?'|b':'');let u=cache.get(ck);if(u)return u;let s=0;for(const c of g.name)s=(s*31+c.charCodeAt(0))>>>0;const h=s%360,r=()=>(s=(s*1664525+1013904223)>>>0)/4294967296,h2=(h+40+r()*60)%360;let sh='';for(let i=0;i<4;i++)sh+=`<circle cx="${r()*200|0}" cy="${r()*200|0}" r="${30+r()*60|0}" fill="hsl(${(h+r()*80)%360} 70% ${55+r()*20|0}%)" opacity=".2"/>`;
+const em=g.cat==='Eaglercraft'||g.cat==='FNF'?CE[g.cat]:(MO.find(m=>m[0].test(g.name))||[0,CE[g.cat]||'🎮'])[1];
+const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h} 70% 48%)"/><stop offset="1" stop-color="hsl(${h2} 75% 20%)"/></linearGradient></defs><rect width="200" height="200" fill="url(#g)"/>${sh}<path d="M0 150Q60 118 120 150T200 132V200H0Z" fill="#0003"/>${bare?`<text x="100" y="125" font-size="84" text-anchor="middle">${em}</text>`:titleSvg(g.name)}</svg>`;
+u='data:image/svg+xml,'+encodeURIComponent(svg);cache.set(ck,u);return u}
+
+/* ---------- list / view ---------- */
+const view={cat:'All',q:''};let L=[];
+function list(all){const q=view.q.trim().toLowerCase(),fav=new Set(S.favs),f=S.folders.find(x=>x.id===view.cat),ids=f&&new Set(f.ids);
+const l=games.filter(g=>(view.cat==='All'||(view.cat==='Favorites'?fav.has(g.id):f?ids.has(g.id):g.cat===view.cat))&&!g.hide&&!S.bk[g.file]&&(!q||g.name.toLowerCase().includes(q))&&(all||!S.onlyIcons||hasIcon(g)));
+const c=(a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true});
+return l.sort(S.sort==='za'?(a,b)=>c(b,a):S.sort==='recent'?(a,b)=>(S.recent[b.id]||0)-(S.recent[a.id]||0)||c(a,b):S.sort==='cat'?(a,b)=>a.cat.localeCompare(b.cat)||c(a,b):c)}
+
+/* ---------- jelly carousel (fixed-step spring physics, runs only while moving) ---------- */
+const padf=()=>innerWidth<900?24:296;const stage=$('stage'),pool=new Map(),G=14,GR=.45;let PAD=padf();document.documentElement.style.setProperty('--pl',PAD+'px');
+let pos=0,target=0,vel=0,j=0,jv=0,raf=0,lastT=0,acc=0,dragging=false,shown=-1,heroT=0,hb=0;
+const SZ=()=>innerWidth<700?110:150;
+function mk(i){const g=L[i],e=el('div','t');want(g);e.style.setProperty('--k',Math.min(i,10));e.style.backgroundImage=`url("${art(g)}")`;e.classList.toggle('gen',!(IMG[g.name]||S.img[g.id]));e.innerHTML='<div class="n"></div><div class="ac"><button title="Favorite"></button><button title="Add to folder">📁</button></div>';e.firstChild.textContent=g.name;const [fb,pb]=e.querySelectorAll('button');
+const star=()=>fb.textContent=S.favs.includes(g.id)?'★':'☆';star();
+fb.onclick=ev=>{ev.stopPropagation();toggleFav(g);star()};pb.onclick=ev=>{ev.stopPropagation();pick(g)};
+e.onpointerenter=ev=>{if(ev.pointerType!=='mouse'||dragging||!idone||i===Math.round(target))return;if(S.lay==='grid'){if(performance.now()-lastPtr<150)go(i,0,1)}else sfx.tick()};
+e.onclick=()=>{if(S.lay==='grid'){if(i!==Math.round(target))go(i,1,1);launch(g,e)}else i===Math.round(target)?launch(g,e):go(i,1)};return e}
+/* layout modes: 'row' (the jelly carousel) or 'grid' (Xbox library style, scrolls down). Every tile has a spring m (0 = row place, 1 = grid place), so switching slides the tiles into position with momentum. */
+S.lay=S.lay==='grid'?'grid':'row';
+let gy=0,gt=0,gv=0,gdrag=0,gdown=0,gp=null,inTrans=0,lastPtr=0,acc2=0;
+function geo(){const w=innerWidth,x0=w<900?16:96,gap=w<700?10:16,mn=w<700?100:150,av=w-2*x0,cols=Math.max(2,Math.floor((av+gap)/(mn+gap))),sz=(av-gap*(cols-1))/cols,top=w<700?112:128,bot=w<900?110:140;return{x0,gap,cols,sz,top,bot,pad:24,vh:Math.max(120,innerHeight-top-bot)}}
+function geoVars(){const q=geo(),s=document.documentElement.style;s.setProperty('--gt',q.top+'px');s.setProperty('--gb',q.bot+'px');s.setProperty('--gx',q.x0+'px')}
+function clampG(v){const q=geo(),ch=Math.ceil(L.length/q.cols)*(q.sz+q.gap)-q.gap+q.pad*2;return Math.max(0,Math.min(Math.max(0,ch-q.vh),v))}
+function rowScroll(i,c){const q=geo(),r=(i/q.cols)|0,top=r*(q.sz+q.gap);if(c)return clampG(top-(q.vh-q.sz)/2);let v=gt;const bot=top+q.sz+q.pad*2;if(top<v)v=top;else if(bot>v+q.vh)v=bot-q.vh;return clampG(v)}
+function layout(){const sz0=SZ(),w=innerWidth,H=innerHeight,gm=S.lay==='grid',mt=gm?1:0,q=geo(),fo=Math.round(target),jl=S.perf==='low'?0:Math.max(-1.2,Math.min(1.2,j)),hi=S.perf==='high',ST=H/2-150,need=new Set();
+if(!gm||inTrans){const first=Math.max(0,Math.floor(pos)-3),last=Math.min(L.length-1,Math.ceil(pos+(w-PAD)/(sz0+G))+2);for(let i=first;i<=last;i++)need.add(i)}
+if(gm||inTrans){const rh=q.sz+q.gap,r0=Math.max(0,Math.floor(gy/rh)-1),r1=Math.ceil((gy+q.vh)/rh)+1,end=Math.min(L.length,(r1+1)*q.cols);for(let i=r0*q.cols;i<end;i++)need.add(i)}
+for(const [i,e] of pool)if(!need.has(i)){e.remove();pool.delete(i)}
+for(const i of need){let e=pool.get(i);if(!e){e=mk(i);e._m=inTrans?1-mt:mt;e._mv=0;e._dl=inTrans?Math.min(.16,Math.abs(i-target)*.008):0;e._s=0;stage.appendChild(e);pool.set(i,e)}
+const d=i-pos,ad=Math.abs(d),s=1+GR*Math.max(0,1-ad),rx=PAD+d*(sz0+G)+(d>0?sz0*GR*Math.min(d,1):0),off=jl*sz0*.2*(1+Math.min(ad,6)*.35);
+const rtx=Math.max(-420,Math.min(w+260,rx+off)),rsx=s*(1+Math.abs(jl)*.1),rsy=s*(1-Math.abs(jl)*.06),rk=hi?-jl*7:0,m=e._m;
+let tx=rtx,ty=ST,sx=rsx,sy=rsy,kw=rk;
+if(m!==0){const c=i%q.cols,r=(i/q.cols)|0,fs=1+.07*e._s,S2=q.sz*fs,gx=q.x0+c*(q.sz+q.gap)-(S2-q.sz)/2,bt=Math.max(-400,Math.min(H+400,q.top+q.pad+r*(q.sz+q.gap)-gy+q.sz+(S2-q.sz)/2)),gty=bt-(70+sz0),gs=S2/sz0;
+tx=rtx+(gx-rtx)*m;ty=ST+(gty-ST)*m;sx=rsx+(gs-rsx)*m;sy=rsy+(gs-rsy)*m;kw=rk*(1-m)}
+e.style.transform=`translate3d(${tx}px,${ty}px,0) scale(${sx},${sy})${kw?` skewX(${kw}deg)`:''}`;
+const f=i===fo;if(e._f!==f){e._f=f;e.classList.toggle('f',f);e.style.zIndex=f?3:''}}}
+function frame(t){raf=0;const dt=Math.min(.05,(t-lastT)/1000||.016);lastT=t;const gm=S.lay==='grid',mt=gm?1:0,low=S.perf==='low';
+if(gm||(low&&!dragging)){pos=target;vel=j=jv=0}
+else if(!dragging){acc+=dt;const st=1/60,jg=S.perf==='high'?.55:.3;while(acc>=st){acc-=st;const a=170*(target-pos)-22*vel;vel+=a*st;pos+=vel*st;jv+=(-230*j-9*jv+jg*a)*st;j+=jv*st}}
+let sb=0;
+if(low){if(!gdrag)gy=gt;gv=0;for(const e of pool.values()){e._m=mt;e._mv=0;e._dl=0;e._s=gm&&e._f?1:0}}
+else{acc2+=dt;const st=1/60;while(acc2>=st){acc2-=st;
+if(!gdrag){const a=140*(gt-gy)-19*gv;gv+=a*st;gy+=gv*st}
+for(const e of pool.values()){if(e._dl>0){e._dl-=st}else{const a=300*(mt-e._m)-24*e._mv;e._mv+=a*st;e._m+=e._mv*st;if(Math.abs(mt-e._m)<.0008&&Math.abs(e._mv)<.02){e._m=mt;e._mv=0}}
+const ts=gm&&e._f?1:0;e._s+=(ts-e._s)*.22;if(Math.abs(ts-e._s)<.003)e._s=ts}}}
+if(!gdrag&&Math.abs(gt-gy)<.3&&Math.abs(gv)<2){gy=gt;gv=0}
+if(inTrans){let any=0;for(const e of pool.values())if(e._dl>0||e._m!==mt)any=1;if(!any)inTrans=0}
+for(const e of pool.values()){const ts=gm&&e._f?1:0;if(e._s!==ts||e._dl>0||e._m!==mt)sb=1}
+layout();
+if(dragging||gdrag||sb||inTrans||Math.abs(gt-gy)>.3||Math.abs(gv)>2||Math.abs(target-pos)>.0005||Math.abs(vel)>.002||Math.abs(j)>.003||Math.abs(jv)>.02)raf=requestAnimationFrame(frame);else{pos=target;vel=j=jv=0;gy=gt;gv=0;layout()}}
+function setLayout(v){if(S.lay===v)return;S.lay=v;save();document.body.classList.toggle('gm',v==='grid');geoVars();const mt=v==='grid'?1:0;pos=target;vel=j=jv=0;
+if(v==='grid'){gy=gt=rowScroll(Math.round(target),1);gv=0}
+if(S.perf==='low'){for(const e of pool.values()){e._m=mt;e._mv=0;e._dl=0}inTrans=0}
+else{inTrans=1;for(const [i,e] of pool){e._dl=Math.min(.16,Math.abs(i-target)*.008);e._mv=e._mv||0}}
+shown=-1;focusChanged();layout();kick()}
+const kick=()=>{if(!raf){lastT=performance.now();raf=requestAnimationFrame(frame)}};
+function go(i,q,ns){i=Math.max(0,Math.min(L.length-1,i));if(i===target&&!dragging)return;target=i;q||sfx.tick();focusChanged();if(S.lay==='grid'&&!ns)gt=rowScroll(i);kick()}
+function focusChanged(){const i=Math.round(target),g=L[i];if(i===shown)return;shown=i;if(!g)return;$('ttl').textContent=g.name;$('sub').textContent=`${g.cat} · ${i+1} of ${L.length}`;clearTimeout(heroT);heroT=setTimeout(()=>{hb^=1;const b=$('b'+hb);b.style.backgroundImage=`url("${art(g)}")`;b.classList.add('on');$('b'+(hb^1)).classList.remove('on')},70)}
+function refresh(){L=list();rowTitle();for(const e of pool.values())e.remove();pool.clear();pos=target=vel=j=jv=0;gy=gt=gv=0;shown=-1;$('empty').style.display=L.length?'none':'block';$('info').style.display=L.length?'block':'none';focusChanged();layout();kick();if(S.onlyIcons)scanCovers()}
+
+/* wheel, drag, keys */
+let wa=0;addEventListener('wheel',e=>{if($('player').classList.contains('open')||$('side').contains(e.target)||$('pick').style.display==='grid')return;if(S.lay==='grid'){const dy=e.deltaMode===1?e.deltaY*32:e.deltaMode===2?e.deltaY*innerHeight:e.deltaY;gt=clampG(gt+dy);kick();return}wa+=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;const st=Math.trunc(wa/55);if(st){wa-=st*55;go(Math.round(target)+st)}},{passive:true});
+let dx0=0,p0=0,moved=0;
+let dIdx=0,dClk=0;const dStep=()=>{if(S.lay==='grid'){const q=geo();return Math.floor(gy/(q.sz+q.gap))}return Math.round(pos)},dTick=()=>{const k=dStep();if(k===dIdx)return;dIdx=k;const n=performance.now();if(n-dClk<30)return;dClk=n;play('click',.7)};
+const pdown=e=>{if(S.lay==='grid'){gdown=1;gdrag=0;moved=0;gp={y0:e.clientY,g0:gy,h:[]};dIdx=dStep();return}dx0=e.clientX;p0=pos;moved=0;dragging=true;vel=0;target=pos;dIdx=dStep()};stage.addEventListener('pointerdown',pdown);$('hit').addEventListener('pointerdown',pdown);
+addEventListener('pointermove',e=>{lastPtr=performance.now();if(gdown){const dy=e.clientY-gp.y0;moved=Math.max(moved,Math.abs(dy));if(moved>6){gdrag=1;dragging=true;gy=gt=clampG(gp.g0-dy);gv=0;dTick();gp.h.push([performance.now(),gy]);if(gp.h.length>6)gp.h.shift();kick()}return}if(!dragging)return;moved=Math.max(moved,Math.abs(e.clientX-dx0));if(moved>6){pos=Math.max(0,Math.min(L.length-1,p0-(e.clientX-dx0)/(SZ()+G)));target=pos;shown=-2;dTick();kick()}});
+addEventListener('pointerup',()=>{if(gdown){gdown=0;if(gdrag){gdrag=0;dragging=false;const h=gp.h,n=performance.now();let v=0;if(h.length>1){const a=h[0],b=h[h.length-1],dt=(b[0]-a[0])/1000;if(dt>0&&n-b[0]<110)v=(b[1]-a[1])/dt}v=Math.max(-4500,Math.min(4500,v));gv=v*.3;gt=clampG(gy+v*.22);if(moved>6)sfx.tick();kick()}return}if(!dragging)return;dragging=false;const t=Math.max(0,Math.min(L.length-1,Math.round(pos)));target=t;shown=-1;focusChanged();if(moved>6)sfx.tick();kick()});
+stage.addEventListener('click',e=>{if(moved>6){e.stopPropagation();e.preventDefault();moved=0}},true);
+addEventListener('keydown',e=>{if(!idone)return;const typing=e.target.tagName==='INPUT';
+if($('player').classList.contains('open')){if(e.key==='Escape'&&!document.fullscreenElement)closePlayer();return}
+if(e.key==='Escape'){if($('pick').style.display==='grid'){$('pick').style.display='none';sfx.shut()}else if($('side').classList.contains('on'))side(false);else if(typing)e.target.blur();return}
+if(typing||e.ctrlKey||e.metaKey)return;const k=e.key,btn=e.target.tagName==='BUTTON';
+if(k==='ArrowRight')go(Math.round(target)+1);else if(k==='ArrowLeft')go(Math.round(target)-1);else if(k==='ArrowDown'&&S.lay==='grid'){e.preventDefault();go(Math.round(target)+geo().cols)}else if(k==='ArrowUp'&&S.lay==='grid'){e.preventDefault();go(Math.round(target)-geo().cols)}else if(k==='Home')go(0);else if(k==='End')go(L.length-1);
+else if(k==='Enter'&&!btn){const e2=pool.get(Math.round(target));if(e2)e2.click()}
+else if(k==='f'&&L[Math.round(target)]){toggleFav(L[Math.round(target)]);const e2=pool.get(Math.round(target));if(e2)e2.querySelector('button').textContent=S.favs.includes(L[Math.round(target)].id)?'★':'☆'}
+else if(k==='/'){e.preventDefault();$('q').focus()}else if(k==='s')side(!$('side').classList.contains('on'));
+else if(/^[a-z0-9]$/i.test(k)){const L2=/\d/.test(k)?'0-9':k.toUpperCase(),i=L.findIndex(g=>g.letter===L2);if(i>=0)go(i)}});
+addEventListener('resize',()=>{document.documentElement.style.setProperty('--sw',SZ()+'px');PAD=padf();document.documentElement.style.setProperty('--pl',PAD+'px');geoVars();gt=clampG(gt);gy=clampG(gy);layout()});
+
+/* ---------- favorites, folders, nav ---------- */
+function toggleFav(g){const i=S.favs.indexOf(g.id);i<0?S.favs.push(g.id):S.favs.splice(i,1);save();sfx.tog();if(view.cat==='Favorites')refresh()}
+function buildNav(){const n=$('nav');n.innerHTML='';[['All','🏠 Home'],['Favorites','★ Favorites'],['Games','🎮 Games'],['Eaglercraft','⛏️ Eaglercraft'],['FNF','🎤 FNF'],['Flash','🎞️ Flash'],...S.folders.map(f=>[f.id,'📁 '+f.name])].forEach(([k,t])=>{const b=el('button','tb'+(view.cat===k?' on':''));b.textContent=t;b.onclick=()=>{view.cat=k;sfx.tog();buildNav();refresh()};n.append(b)})}
+function newFolder(name){name=name.trim();if(!name)return null;const f={id:'f'+Date.now().toString(36)+Math.random().toString(36).slice(2,4),name:name.slice(0,30),ids:[]};S.folders.push(f);save();buildNav();return f}
+function pick(g){const m=$('pick');if(m.style.display!=='grid')sfx.open();const c=el('div','card');m.innerHTML='';m.style.display='grid';c.append(el('h3','','Add “'+esc(g.name)+'” to folder'));
+S.folders.forEach(f=>{const on=f.ids.includes(g.id),b=el('button','it'+(on?' on':''),'<i>📁</i><span></span>'+(on?'<b style="margin-left:auto">✓</b>':''));b.querySelector('span').textContent=f.name;b.onclick=()=>{on?f.ids.splice(f.ids.indexOf(g.id),1):f.ids.push(g.id);save();sfx.tog();pick(g);if(view.cat===f.id)refresh()};c.append(b)});
+const r=el('div','row'),inp=el('input','txt');inp.placeholder='New folder…';inp.maxLength=30;const ok=el('button','mini','Create');ok.onclick=()=>{const f=newFolder(inp.value);if(f){f.ids.push(g.id);save();sfx.sel();pick(g);fol()}};inp.onkeydown=e=>{if(e.key==='Enter')ok.click()};r.append(inp,ok);r.style.marginTop='10px';c.append(r);m.append(c)}
+$('pick').onclick=e=>{if(e.target.id==='pick'){e.target.style.display='none';sfx.shut()}};
+
+/* ---------- left settings bar ---------- */
+function seg(opts,cur,fn){const d=el('div','seg');opts.forEach(([k,t])=>{const b=el('button',k===cur?'on':'',t);b.onclick=()=>{d.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');fn(k)};d.append(b)});return d}
+function side(on){const s=$('side');if(s.classList.contains('on')===on)return;s.classList.toggle('on',on);$('scrim').classList.toggle('on',on);on?sfx.open():sfx.shut()}
+function fol(){const box=$('fl');if(!box)return;box.innerHTML='';S.folders.forEach((f,i)=>{const r=el('div','fr','<span></span><button title="Up">▲</button><button title="Down">▼</button><button title="Delete">✕</button>');const [sp,u,d,x]=[r.children[0],...r.querySelectorAll('button')];sp.textContent='📁 '+f.name+' ('+f.ids.length+')';sp.onclick=()=>{view.cat=f.id;buildNav();refresh();side(false)};
+const mv=n=>{const k=i+n;if(k<0||k>=S.folders.length)return;[S.folders[i],S.folders[k]]=[S.folders[k],S.folders[i]];save();sfx.tog();buildNav();fol()};u.onclick=()=>mv(-1);d.onclick=()=>mv(1);x.onclick=()=>{S.folders.splice(i,1);if(view.cat===f.id){view.cat='All';refresh()}save();sfx.back();buildNav();fol()};box.append(r)});if(!S.folders.length)box.append(el('div','hint','No folders yet. Create one, then press 📁 on a focused game to add it.'))}
+function buildSide(){const s=$('side');s.innerHTML='<h2>Settings</h2>';const secs={};
+const defs=[['theme','🎨','Theme'],['name','✏️','Site name'],['perf','⚡','Performance'],['folders','📁','Folders'],['sort','↕️','Sort games'],['layout','▦','Layout'],['cover','🖼️','Cover image'],['library','🔄','Game library'],['sound','🔊','Sound']];
+defs.forEach(([k,ic,t])=>{const b=el('button','it','<i>'+ic+'</i>'+t),sec=el('div','sec'),w=el('div'),inn=el('div','in');w.append(inn);sec.append(w);secs[k]=inn;b.onclick=()=>{const was=sec.classList.contains('on');s.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));s.querySelectorAll('.it').forEach(x=>x.classList.remove('on'));if(!was){sec.classList.add('on');b.classList.add('on')}sfx.tog()};s.append(b,sec)});
+secs.theme.innerHTML='<div id="ww"><div id="wheel"></div><div id="kn"></div><div id="cp"></div></div><div class="sws" id="sws"></div>';
+[118,200,265,330,0,28,48,170].forEach(h=>{const b=el('button');b.style.background=`hsl(${h} 75% 45%)`;b.onclick=()=>{S.h=h;applyTheme();save();sfx.tog()};$('sws')&&0;secs.theme.querySelector('.sws').append(b)});
+const wh=secs.theme.querySelector('#wheel'),pk=e=>{const r=wh.getBoundingClientRect(),a=Math.atan2(e.clientX-r.left-r.width/2,-(e.clientY-r.top-r.height/2));S.h=Math.round((a*180/Math.PI+360)%360);applyTheme()};let wd=0;
+wh.onpointerdown=e=>{wd=1;wh.setPointerCapture(e.pointerId);pk(e)};wh.onpointermove=e=>{if(wd)pk(e)};wh.onpointerup=()=>{wd=0;save();sfx.tog()};
+const ni=el('input','txt');ni.value=S.name;ni.maxLength=40;ni.oninput=()=>{S.name=ni.value.trim()||'GameBox';applyName();save()};secs.name.append(ni,el('div','hint','Changes the browser tab title and the name in the top-left.'));
+secs.perf.append(seg([['high','High'],['med','Medium'],['low','Low']],S.perf,k=>{S.perf=k;applyPerf();save();kick();sfx.tog()}),el('div','hint','High: full jelly, blur and zoom. Medium: lighter jelly, no blur, shorter animations. Low: all animation off for slow devices.'));
+secs.folders.innerHTML='<div class="row"><input class="txt" id="nf" placeholder="New folder name" maxlength="30"><button class="mini" id="nfb">Create</button></div><div id="fl"></div>';
+const nf=secs.folders.querySelector('#nf'),mk2=()=>{if(newFolder(nf.value)){nf.value='';sfx.sel();fol()}};secs.folders.querySelector('#nfb').onclick=mk2;nf.onkeydown=e=>{if(e.key==='Enter')mk2()};
+const srt=el('button','mini','Sort folders A–Z');srt.style.marginTop='6px';srt.onclick=()=>{S.folders.sort((a,b)=>a.name.localeCompare(b.name));save();buildNav();fol();sfx.tog()};secs.folders.append(srt);
+secs.sort.append(seg([['az','A–Z'],['za','Z–A'],['recent','Recent'],['cat','Type']],S.sort,k=>{S.sort=k;save();refresh();dockLabel()}));
+secs.sound.append(seg([[1,'On'],[0,'Off']],S.sound?1:0,k=>{S.sound=!!+k;save();sfx.tog()}));{const ci=el('input','txt'),sv=el('button','mini','Set'),rs=el('button','mini','Reset'),rw=el('div','row');ci.placeholder='Paste an image link';rw.append(ci,sv);rs.style.marginTop='4px';sv.onclick=()=>{const g=L[Math.round(target)],u=ci.value.trim();if(g&&/^https?:\/\//i.test(u)){setCover(g,u);ci.value='';sfx.sel()}};rs.onclick=()=>{const g=L[Math.round(target)];if(g){setCover(g,undefined);sfx.back()}};secs.cover.append(rw,rs,el('div','hint','Sets the cover for the game selected in the row. Reset returns to the automatic cover.'));coverTools(secs.cover);libTools(secs.library);layTools(secs.layout)}fol();applyTheme()}
+function buildDock(){const d=$('dock');[['🎲','Random',()=>{const p=L.length?L:games,g=p[Math.random()*p.length|0],i=L.indexOf(g);if(i>=0){go(i);setTimeout(()=>pool.get(i)&&launch(g,pool.get(i)),450)}else launch(g,$('hit'))}],['📁','Folders',()=>{side(true)}],['↕️','Sort: A–Z',()=>{const o=['az','za','recent','cat'];S.sort=o[(o.indexOf(S.sort)+1)%4];save();refresh();dockLabel();sfx.tog()}],['🎨','Customize',()=>side(true)]].forEach(([ic,t,fn],i)=>{const b=el('button','d'+(i===3?' pl2':''),'<b>'+ic+'</b><span>'+t+'</span>');b.onclick=fn;if(i===2)b.id='sortb';d.append(b)})}
+const dockLabel=()=>{const n={az:'A–Z',za:'Z–A',recent:'Recent',cat:'Type'};$('sortb').lastChild.textContent='Sort: '+n[S.sort]};
+$('gear').onclick=$('av').onclick=()=>side(true);$('scrim').onclick=()=>side(false);let et=0;$('edge').onmouseenter=()=>{et=setTimeout(()=>side(true),180)};$('edge').onmouseleave=()=>clearTimeout(et);
+$('q').addEventListener('input',e=>{view.q=e.target.value;refresh()});
+
+/* ---------- launch: zoom in, fade out, start ---------- */
+let busy=false;
+async function launch(g,e){if(busy)return;busy=true;play('select');S.recent[g.id]=Date.now();save();const fx=S.perf,fade=$('fade');
+if(fx!=='low'){const r=e.getBoundingClientRect(),z=$('zoom'),vw=innerWidth,vh=innerHeight,dur=fx==='high'?.7:.4;
+Object.assign(z.style,{display:'block',left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px',backgroundImage:e.style.backgroundImage||`url("${art(g)}")`,transition:'none',transform:'none'});z.offsetWidth;
+z.style.transition=`transform ${dur}s cubic-bezier(.65,0,.25,1)`;z.style.transform=`translate(${vw/2-r.left-r.width/2}px,${vh/2-r.top-r.height/2}px) scale(${Math.max(vw/r.width,vh/r.height)*1.25})`;
+await sleep(dur*650);fade.style.opacity=1;await sleep(380);openPlayer(g);await sleep(60);z.style.display='none';fade.style.opacity=0}
+else openPlayer(g);busy=false}
+
+/* ---------- player ---------- */
+let currentGame=null,currentUrl=null,token=0;
+const setStatus=h=>{const s=$('status');s.innerHTML=h;s.classList.remove('hide')},hideStatus=()=>$('status').classList.add('hide');
+async function openPlayer(g){currentGame=g;const my=++token;$('ptitle').textContent=g.name;$('player').classList.add('open');$('player').setAttribute('aria-hidden','false');unload();setStatus('<div class="lt"></div><div>Loading '+esc(g.name)+'…</div><div class="bar"></div>');$('status').querySelector('.lt').style.backgroundImage='url("'+art(g)+'")';
+let html=null,ub=BASES[0];for(const base of BASES){try{const r=await fetch(base+encodeURIComponent(g.file));if(!r.ok)throw 0;html=await r.text();ub=base;break}catch(e){}if(my!==token)return}
+if(my!==token)return;
+if(html&&isBlank(html,true)){S.bk[g.file]=1;save();setStatus('<div class="err">This game is just a blank page.</div><div>It was removed from your list.</div>');setTimeout(()=>{if(token===my){closePlayer();relist()}},1600);return}
+if(!html){setStatus('<div class="err">Couldn\'t load this game.</div><div>The file may be unavailable, or your network blocks the CDN.<br>Try again, or pick another game.</div>');return}
+if(currentUrl)URL.revokeObjectURL(currentUrl);currentUrl=URL.createObjectURL(new Blob([guard(html,ub)],{type:'text/html;charset=utf-8'}));const fr=$('frame');fr.onload=()=>{let h=currentUrl;try{h=fr.contentWindow.location.href}catch(e){}
+if(h!==currentUrl&&h!=='about:blank'){setStatus('<div class="err">This game moved to another page.</div><div>It was stopped so you stay in the hub.<br>'+esc(String(h).slice(0,90))+'</div><button class="btn" id="rtry">Reload game</button>');$('rtry').onclick=()=>openPlayer(g);return}
+hideStatus();try{fr.focus()}catch(e){}};fr.src=currentUrl}
+async function closePlayer(){if(busy)return;busy=true;token++;sfx.welcome();const fade=$('fade');if(S.perf!=='low'){fade.style.opacity=1;await sleep(300)}
+if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});unload();if(currentUrl){URL.revokeObjectURL(currentUrl);currentUrl=null}
+$('player').classList.remove('open');$('player').setAttribute('aria-hidden','true');fade.style.opacity=0;busy=false;buildRec()}
+$('back').onclick=closePlayer;$('warnx').onclick=()=>{play('click');const w=$('warn');w.classList.add('gone');setTimeout(()=>w.remove(),350)};$('reload').onclick=()=>currentGame&&openPlayer(currentGame);
+$('full').onclick=()=>{const e=$('pstage');if(document.fullscreenElement)document.exitFullscreen();else if(e.requestFullscreen)e.requestFullscreen().then(()=>{try{$('frame').focus()}catch(x){}})};
+$('newtab').onclick=()=>{if(currentUrl)window.open(currentUrl,'_blank')};
+
+/* ---------- anti-kick guard, recents, row title, toast ---------- */
+const GD='<script>(function(){var P=parent;function say(u){try{P.postMessage({gh:1,u:String(u)},"*")}catch(e){}}try{["back","forward","go"].forEach(function(k){history[k]=function(){say("history."+k)}})}catch(e){}var n=window.navigation;if(n)n.addEventListener("navigate",function(e){if(window.__ghLeave||!e.cancelable||e.hashChange||e.userInitiated||e.downloadRequest!=null||e.navigationType==="reload"||e.destination.sameDocument)return;e.preventDefault();say(e.destination.url)});else addEventListener("beforeunload",function(e){if(!window.__ghLeave){e.preventDefault();e.returnValue=""}})})()<\/script>';
+const GA='<script>addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a&&/^#/.test(a.getAttribute("href"))){e.preventDefault();var id=a.getAttribute("href").slice(1);var t=id&&document.getElementById(id);if(t)t.scrollIntoView()}},true)<\/script>';
+const guard=(h,base)=>{const bt=(base&&!/<base\s/i.test(h))?'<base href="'+base+'">':'',ins=bt+GD+GA,m=h.match(/<head(\s[^>]*)?>/i)||h.match(/<html(\s[^>]*)?>/i);return m?h.slice(0,m.index+m[0].length)+ins+h.slice(m.index+m[0].length):ins+h};
+function unload(){const f=$('frame');try{f.contentWindow.__ghLeave=1}catch(e){}f.onload=null;f.src='about:blank'}
+let tt=0;function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),3800)}
+addEventListener('message',e=>{if(e.source===$('frame').contentWindow&&e.data&&e.data.gh)toast('Stopped this game from leaving the page'+(e.data.u?' ('+String(e.data.u).slice(0,60)+')':''))});
+addEventListener('beforeunload',e=>{if($('player').classList.contains('open')){e.preventDefault();e.returnValue=''}});
+function rowTitle(){const f=S.folders.find(x=>x.id===view.cat),q=view.q.trim(),r=$('rowt');r.innerHTML='<b></b><span>'+L.length+'</span>';r.firstChild.textContent=q?'Results for “'+q+'”':view.cat==='All'?'All games':view.cat==='Favorites'?'★ Favorites':f?f.name:view.cat;oiBox(r)}
+function buildRec(){const b=$('rec');b.innerHTML='';const r=games.filter(g=>S.recent[g.id]).sort((a,c)=>S.recent[c.id]-S.recent[a.id]).slice(0,3);if(!r.length)return;b.append(el('h4','','Recents'));r.forEach(g=>{const x=el('button','rc','<i></i><span></span>');x.firstChild.style.backgroundImage=`url("${art(g,1)}")`;x.lastChild.textContent=g.name;x.onclick=()=>launch(g,x.firstChild);b.append(x)})}
+stage.addEventListener('pointermove',e=>{const t=e.target.closest&&e.target.closest('.t');if(!t)return;const r=t.getBoundingClientRect();t.style.setProperty('--mx',(e.clientX-r.left)/r.width*100+'%');t.style.setProperty('--my',(e.clientY-r.top)/r.height*100+'%')});
+
+/* ---------- cover images: your IMG list > pasted link > Wikipedia > App Store > RAWG > the game's own icon > generated art ---------- */
+/* Optional: a free key from https://rawg.io/apidocs adds a source with very wide coverage. Paste it here, or in Settings > Cover image. */
+const RAWG_KEY='';
+const nz=s=>s.toLowerCase().replace(/[^a-z0-9]/g,''),Q=[],tried=new Set();let qb=0;
+S.wm=S.wm||{};S.mt=S.mt||{};S.ic=S.ic||{};S.ig=S.ig||{};
+/* one-time reset now that the search is wider; after that, "not found" results expire after a week so new sources and new releases get picked up */
+if(S.imgv!==4){for(const k in S.img)if(!S.img[k])delete S.img[k];S.wm={};S.mt={};S.imgv=4}
+{const now=Date.now(),old=k=>now-(S.mt[k]||0)>6048e5;for(const k in S.wm)if(old(k)){delete S.wm[k];if(S.img[k]===0)delete S.img[k]}for(const k in S.img)if(S.img[k]===0&&old(k))delete S.img[k];try{save()}catch(e){}}
+/* name tidying: drop (brackets) and noise words, and also try the part before a colon / dash ("Subway Surfers: London" -> "Subway Surfers") */
+const clean=n=>n.replace(/\([^)]*\)/g,' ').replace(/\b(lite|online|remake|remastered|scratch|html5|unham)\b/ig,' ').replace(/\s+/g,' ').trim();
+function variants(n){const c=clean(n),b=c.split(/\s*[:–—]\s+|\s+-\s+/)[0].trim();return[...new Set([c,b])].filter(x=>nz(x).length>=3)}
+/* 3 = same full title, 2 = same title before a subtitle (":", " - ", "|"), 1 = near match (prefix, short tail, no sequel number), 0 = no */
+const SEP=/\s*(?:[:–—|]|\s-\s)\s*/;
+function rank(q,t){const a=nz(q),T=t.replace(/\s*\([^)]*\)/g,''),b=nz(T.split(SEP)[0]);if(!a||!b)return 0;if(a===nz(T))return 3;if(a===b)return 2;if(a.length<6||b.length<6)return 0;const[s,l]=a.length<b.length?[a,b]:[b,a];return l.startsWith(s)&&l.length-s.length<=12&&!/\d/.test(l.slice(s.length))?1:0}
+function best(q,list,t){let o=null,m=0;for(const x of list){const r=rank(q,t(x));if(r>m){m=r;o=x}}return o}
+async function wiki(q){const r=await fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=6&prop=pageimages|description&piprop=thumbnail&pithumbsize=400&gsrsearch='+encodeURIComponent(q+' video game'));
+const j=await r.json(),ps=j.query?Object.values(j.query.pages).sort((x,y)=>(x.index||0)-(y.index||0)):[];
+const m=best(q,ps.filter(p=>p.thumbnail&&/game|simulator|software|clicker|puzzle|shooter|platformer/i.test((p.description||'')+' '+p.title)),p=>p.title);return m&&m.thumbnail.source}
+/* the App Store search is rate limited, so it gets one request every ~3s and backs off for a minute if refused */
+let itNext=0,itOff=0;
+async function itunes(q){if(Date.now()<itOff)throw 0;const slot=Math.max(Date.now(),itNext);itNext=slot+3200;if(slot>Date.now())await sleep(slot-Date.now());
+const r=await fetch('https://itunes.apple.com/search?media=software&entity=software&limit=10&term='+encodeURIComponent(q));if(!r.ok){itOff=Date.now()+60000;throw 0}
+const j=await r.json(),m=best(q,(j.results||[]).filter(x=>x.artworkUrl512&&(x.genres||[]).includes('Games')),x=>x.trackName);return m&&m.artworkUrl512}
+async function rawg(q){const key=S.rawgKey||RAWG_KEY;if(!key)return;const r=await fetch('https://api.rawg.io/api/games?page_size=8&key='+encodeURIComponent(key)+'&search='+encodeURIComponent(q));const j=await r.json();
+const m=best(q,(j.results||[]).filter(x=>x.background_image),x=>x.name);return m&&m.background_image}
+
+/* ---------- extra cover sources ---------- */
+/* a request that tries the site directly first, then a few public CORS relays (for sites that don't allow direct requests) */
+const PXS=[u=>u,u=>'https://corsproxy.io/?url='+encodeURIComponent(u),u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u),u=>'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u)],pxDown={};
+async function viaPx(u,txt){for(let i=0;i<PXS.length;i++){if((pxDown[i]||0)>Date.now())continue;try{const r=await fetch(PXS[i](u));if(!r.ok)throw 0;return txt?await r.text():await r.json()}catch(e){if(i)pxDown[i]=Date.now()+12e4}}throw 0}
+const GAMEW=/game|juego|jeu|spiel|gioc|gioco|игра|ゲーム|gra\b|spel|simulator|puzzle/i;
+/* Wikipedia article summary by exact title, in several languages */
+async function wikiRest(q){const tries=[['en',q+' (video game)'],['en',q],['es',q],['fr',q],['de',q],['pt',q],['it',q],['ru',q]];
+for(const[l,t]of tries){try{const r=await fetch('https://'+l+'.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(t.replace(/ /g,'_'))+'?redirect=true');if(!r.ok)continue;const j=await r.json();if(j.type!=='standard'||!j.thumbnail)continue;if(!GAMEW.test((j.description||'')+' '+(j.extract||'').slice(0,240)))continue;if(rank(q,j.title||'')<2)continue;return j.thumbnail.source}catch(e){}}}
+/* Wikidata: the game's official logo (P154) or image (P18), served by Wikimedia Commons */
+async function wikidata(q){const r=await fetch('https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&origin=*&language=en&limit=8&search='+encodeURIComponent(q)),j=await r.json();
+const c=(j.search||[]).filter(x=>GAMEW.test(x.description||'')&&rank(q,x.label||'')>=2).slice(0,3);if(!c.length)return;
+const r2=await fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&props=claims&ids='+c.map(x=>x.id).join('|')),j2=await r2.json();
+for(const x of c){const cl=((j2.entities||{})[x.id]||{}).claims||{};for(const p of['P154','P18']){const v=cl[p]&&cl[p][0]&&cl[p][0].mainsnak&&cl[p][0].mainsnak.datavalue;if(v&&v.value)return'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(v.value)+'?width=400'}}}
+/* Wikimedia Commons file search ("<game> logo") */
+async function commons(q){const r=await fetch('https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=400&gsrsearch='+encodeURIComponent(q+' logo')),j=await r.json();
+const ps=j.query?Object.values(j.query.pages).sort((a,b)=>(a.index||0)-(b.index||0)):[];
+const m=best(q,ps.filter(p=>p.imageinfo&&p.imageinfo[0]&&/\.(png|jpe?g|svg|webp)$/i.test(p.title)),p=>p.title.replace(/^File:/i,'').replace(/\.[a-z]+$/i,'').replace(/\b(logo|icon|cover|box ?art|title|screenshot|game)\b/ig,' ').replace(/[_-]+/g,' ').trim());return m&&(m.imageinfo[0].thumburl||m.imageinfo[0].url)}
+/* Steam store search */
+async function steam(q){try{const j=await viaPx('https://store.steampowered.com/api/storesearch/?l=english&cc=US&term='+encodeURIComponent(q));const m=best(q,(j.items||[]).filter(x=>x.type==='app'),x=>x.name);return m&&'https://cdn.cloudflare.steamstatic.com/steam/apps/'+m.id+'/header.jpg'}catch(e){}}
+/* GOG store search */
+async function gog(q){try{const j=await viaPx('https://embed.gog.com/games/ajax/filtered?mediaType=game&search='+encodeURIComponent(q));const m=best(q,(j.products||[]).filter(x=>x.image),x=>x.title);return m&&'https:'+m.image.replace(/^https?:/,'')+'_product_card_v2_mobile_slider_639.jpg'}catch(e){}}
+/* optional, off by default: a loose web image search. It can't check the title, so it may pick a wrong picture. */
+async function bing(q){try{const h=await viaPx('https://www.bing.com/images/search?form=HDRSC2&first=1&q='+encodeURIComponent('"'+q+'" game icon logo'),1);const m=h.match(/turl(?:&quot;|\\?")\s*:\s*(?:&quot;|\\?")(https:[^"]*?)(?:&quot;|\\?")/);return m&&m[1].replace(/&amp;/g,'&').replace(/\\u0026/g,'&')}catch(e){}}
+/* last resort: read the game's own file. Only the first ~120 KB is downloaded; we look for the icon / share image it declares. */
+const hs=s=>{let h=5381;for(let i=0;i<s.length;i++)h=(h*33^s.charCodeAt(i))>>>0;return h+'.'+s.length};
+async function head(g){for(const base of BASES){try{const r=await fetch(base+encodeURIComponent(g.file));if(!r.ok||!r.body)continue;const rd=r.body.getReader(),dec=new TextDecoder();let t='';while(t.length<120000){const x=await rd.read();if(x.done)break;t+=dec.decode(x.value,{stream:true})}rd.cancel().catch(()=>{});return t}catch(e){}}throw 0}
+const okU=u=>!!u&&((/^https:\/\/[^\s"'()\\]+$/.test(u)&&u.length<2000)||(u.length<80000&&/^data:image\/(png|jpe?g|webp|gif|x-icon|vnd\.microsoft\.icon);base64,[A-Za-z0-9+\/=]+$/.test(u)));
+const NOHOST=/(^|\.)(google\.com|googleusercontent\.com|gstatic\.com|github\.io|githubusercontent\.com|jsdelivr\.net|unpkg\.com|cloudflare\.com|about:blank)$/i;
+function pick(h){const attr=(t,n)=>{const m=t.match(new RegExp('\\b'+n+'\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\')','i'));return m?(m[1]!==undefined?m[1]:m[2]):''};
+const abs=u=>{u=(u||'').trim().replace(/&amp;/g,'&');if(u.startsWith('//'))u='https:'+u;return okU(u)?u:null};
+let apple=null,og=null,ico=null;
+for(const t of h.match(/<(?:link|meta)\b[^>]*>/gi)||[]){const rel=attr(t,'rel').toLowerCase(),prop=(attr(t,'property')||attr(t,'name')).toLowerCase();
+if(/^<link/i.test(t)){const u=abs(attr(t,'href'));if(!u)continue;if(rel.includes('apple-touch-icon'))apple=apple||u;else if(/\bicon\b/.test(rel))ico=ico||u}
+else if(/^(og|twitter):image/.test(prop))og=og||abs(attr(t,'content'))}
+const fr=h.match(/<iframe\b[^>]*\bsrc\s*=\s*["'](https:\/\/([^"'\/\s?#]+))/i);
+const fav=fr&&!NOHOST.test(fr[2])?'https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&size=128&url='+encodeURIComponent(fr[1]):null;
+return apple||og||ico||fav}
+/* an icon that turns up for 3+ different games is a generic site icon, not the game's, so it is ignored */
+async function fromGame(g){const u=pick(await head(g));if(!u)return null;const k=hs(u);if(S.ig[g.id]!==k){if((S.ic[k]||0)>=2)return null;S.ic[k]=(S.ic[k]||0)+1;S.ig[g.id]=k}return u}
+const loads=u=>new Promise(r=>{const i=new Image();i.onload=()=>r(1);i.onerror=()=>r(0);i.src=u});
+/* try each source in order; err=1 means a source failed to answer (so don't record "not found") */
+async function find(g,srcs){let u=null,err=0;const vs=variants(g.name);
+for(const s of srcs){
+if(s==='file'){try{u=await fromGame(g);if(u&&!(await loads(u)))u=null}catch(e){err=1;u=null}}
+else for(const q of vs){try{u=await s(q);if(u&&!(await loads(u)))u=null}catch(e){err=1;u=null}if(u)break}
+if(u)break}
+return{u,err}}
+function want(g){if(IMG[g.name]||S.img[g.id]!==undefined||tried.has(g.id)||Q.includes(g))return;Q.push(g);setTimeout(pump,0)}
+function setCover(g,u){S.img[g.id]=u;save();const e=pool.get(L.indexOf(g));if(e){e.style.backgroundImage=`url("${art(g)}")`;e.classList.toggle('gen',!(IMG[g.name]||S.img[g.id]))}if(L[Math.round(target)]===g){shown=-1;focusChanged()}buildRec()}
+async function pump(){if(qb>=2)return;const g=Q.pop();if(!g)return;qb++;
+if(pool.has(L.indexOf(g))&&!tried.has(g.id)){tried.add(g.id);const{u,err}=await find(g,ALLSRC());
+if(u)setCover(g,u);else if(!err){S.img[g.id]=0;S.mt[g.id]=Date.now();save()}}
+qb--;setTimeout(pump,150)}
+
+/* ---------- "only with icons" checkbox: filters the list, and while on, looks up icons for the whole list in the background ---------- */
+var scanning=0,again=0,rlT=0,lastAct=0,scanTxt='';
+['pointerdown','wheel','keydown'].forEach(t=>addEventListener(t,()=>{lastAct=Date.now()},{passive:true,capture:true}));
+function hasIcon(g){return!!(IMG[g.name]||S.img[g.id])}
+function scanNote(t){if(t!==undefined)scanTxt=t;const s=$('sc');if(s)s.textContent=S.onlyIcons?scanTxt:''}
+function oiBox(r){const l=el('label','oi','<input type="checkbox"><span>Only with icons</span><small id="sc"></small>'),c=l.firstChild;c.checked=!!S.onlyIcons;c.onchange=()=>{S.onlyIcons=c.checked;save();sfx.tog();refresh()};r.append(l);scanNote()}
+/* rebuild the list but keep the focused game where it is */
+function relist(){const cur=L[Math.round(target)];L=list();let i=cur?L.indexOf(cur):-1;if(i<0)i=Math.min(Math.round(target),Math.max(0,L.length-1));rowTitle();for(const e of pool.values())e.remove();pool.clear();pos=target=i;vel=j=jv=0;if(S.lay==='grid'){gt=gy=rowScroll(i,1);gv=0}shown=-1;$('empty').style.display=L.length?'none':'block';$('info').style.display=L.length?'block':'none';focusChanged();layout();kick()}
+/* new icons show up in batches, and never while you're dragging or have just used a key / the wheel */
+function relistSoon(){if(rlT)return;rlT=setTimeout(function f(){rlT=0;if(!S.onlyIcons)return;if(dragging||Date.now()-lastAct<1500||$('player').classList.contains('open')){rlT=setTimeout(f,1500);return}relist()},4000)}
+/* pass 1: Wikipedia (3 ways) + Wikidata + Commons + RAWG. pass 2: Steam + GOG. pass 3: App Store (slow, rate limited). pass 4: the game's own file. pass 5 (optional): loose web image search. wm = how many passes a game has already been through. */
+const PH={1:[wikiRest,wiki,wikidata,commons,rawg],2:[steam,gog],3:[itunes],4:['file'],5:[bing]};
+const LAST=()=>S.loose?5:4;
+function ALLSRC(){return[wikiRest,wiki,wikidata,commons,steam,gog,itunes,rawg,'file'].concat(S.loose?[bing]:[])}
+async function scanCovers(){if(scanning){again=1;return}scanning=1;
+try{do{again=0;
+for(const phase of(S.loose?[1,2,3,4,5]:[1,2,3,4])){if(!S.onlyIcons||again)break;
+const todo=list(1).filter(g=>S.img[g.id]===undefined&&!IMG[g.name]&&(S.wm[g.id]||0)===phase-1&&(phase>1||!tried.has(g.id))),total=todo.length;let i=0,n=0;
+await Promise.all(Array.from({length:phase===3?1:3},async()=>{while(S.onlyIcons&&!again){const g=todo[i++];if(!g)break;if(S.img[g.id]!==undefined)continue;
+if(phase===3&&Date.now()<itOff)await sleep(itOff-Date.now());
+const{u,err}=await find(g,PH[phase]);
+if(u){setCover(g,u);relistSoon()}else if(!err){if(phase<LAST())S.wm[g.id]=phase;else S.img[g.id]=0;S.mt[g.id]=Date.now();save()}
+scanNote('Finding icons… '+(++n)+'/'+total);await sleep(phase===3?0:120)}}))}
+}while(again&&S.onlyIcons)}
+finally{scanning=0;scanNote('');if(S.onlyIcons)relistSoon()}}
+/* Settings > Cover image extras */
+function coverTools(box){
+const k=el('input','txt'),rs=el('button','mini','Re-scan icons'),cp=el('button','mini','Copy cover list');
+k.placeholder='RAWG API key (optional)';k.value=S.rawgKey||'';k.style.marginTop='10px';k.onchange=()=>{S.rawgKey=k.value.trim();save();sfx.tog()};
+rs.style.marginTop=cp.style.marginTop='6px';cp.style.marginLeft='6px';
+rs.onclick=()=>{for(const id in S.img)if(!S.img[id])delete S.img[id];S.wm={};S.mt={};tried.clear();Q.length=0;save();sfx.sel();refresh();toast('Looking for missing icons again…')};
+cp.onclick=async()=>{const t=games.filter(g=>/^https:/.test(S.img[g.id]||'')).map(g=>JSON.stringify(g.name)+':'+JSON.stringify(S.img[g.id])+',').join('\n');try{await navigator.clipboard.writeText(t);toast('Copied '+t.split('\n').length+' covers. Paste them inside IMG={ } in the page code.')}catch(e){prompt('Copy this list:',t)}};
+const lo=el('button','mini',S.loose?'Loose web search: ON':'Loose web search: OFF');lo.style.marginTop='6px';lo.style.display='block';lo.onclick=()=>{S.loose=!S.loose;lo.textContent=S.loose?'Loose web search: ON':'Loose web search: OFF';if(S.loose)for(const id in S.img)if(S.img[id]===0){delete S.img[id];S.wm[id]=4}save();sfx.sel();tried.clear();Q.length=0;refresh();toast(S.loose?'Loose web image search on (last resort, may pick a wrong picture)':'Loose web image search off')};
+box.append(lo,el('div','hint','Sources, in order: your IMG list, pasted links, Wikipedia (EN, ES, FR, DE, PT, IT, RU), Wikidata logos, Wikimedia Commons, Steam, GOG, RAWG, App Store, the game\'s own icon, then (if on) a loose web image search that can\'t verify the title.'),el('div','hint','Extra icon source: a free key from rawg.io/apidocs finds many games that Wikipedia and the App Store don\'t have.'),k,rs,cp,el('div','hint','Copy cover list gives you every cover found so far, to paste inside IMG={ … } so every visitor gets them instantly.'))}
+
+/* ---------- GameBox intro ---------- */
+let idone=0;
+function popSounds(){if(!S.sound)return;const sel='.t,#av,#nm,#top>:not(#nav):not(#av):not(#nm),#nav,#nav .tb,#rowt,#info,.d,#hints,.rc',seen=new Set(),vw=innerWidth,vh=innerHeight;document.querySelectorAll(sel).forEach(e=>{const cs=getComputedStyle(e);if(!cs.animationName||cs.animationName==='none')return;const r=e.getBoundingClientRect();if(r.width&&(r.right<0||r.left>vw||r.bottom<0||r.top>vh))return;const d=parseFloat(cs.animationDelay)||0,k=Math.round(d*1000/40);if(seen.has(k))return;seen.add(k);setTimeout(()=>play('complete',.8),Math.max(0,d*1000))})}
+function endIntro(skip){if(idone)return;idone=1;try{AU.startup.pause()}catch(e){}const b=document.body,i=$('intro');if(skip)i.classList.add('skip');b.classList.remove('pre');b.classList.add('in');popSounds();setTimeout(()=>b.classList.remove('in'),3600);setTimeout(()=>{i.remove();play('welcome')},skip?800:1700)}
+async function boot(){if(S.sound){try{await AU.startup.play()}catch(e){if(e.name==='NotAllowedError'){$('itap').classList.add('on');await new Promise(r=>{const f=()=>{removeEventListener('pointerdown',f);removeEventListener('keydown',f);r()};addEventListener('pointerdown',f);addEventListener('keydown',f)});$('itap').classList.remove('on');try{await AU.startup.play()}catch(x){}}}}
+$('intro').classList.add('go');const t0=Date.now(),sk=()=>{if(Date.now()-t0>2000)endIntro(1)};addEventListener('pointerdown',sk);addEventListener('keydown',e=>{if(e.key==='Escape'||e.key===' '||e.key==='Enter')sk()});await sleep(8700);endIntro()}
+
+/* ---------- init ---------- */
+const clock=()=>$('clk').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});clock();setInterval(clock,20000);
+document.documentElement.style.setProperty('--sw',SZ()+'px');
+/* ---------- auto-sync with github.com/bubbls/ugs-singlefile (UGS-Files): every game file there is added; ones already in the list are skipped ---------- */
+const REPO_TREE='https://api.github.com/repos/bubbls/ugs-singlefile/git/trees/HEAD?recursive=1',REPO_DIR='UGS-Files/';
+const DROP=["clbas.html", "clgrn.html", "cluzg.html", "clovofixed.html", "clpou.html", "clpolyold.html", "clsnowriderrrr.html", "clbrainrot.html", "clstealbrainrot.html", "cltagc3.html", "cltagcm.html", "clthedeadseat.html", "clangrybirdsonline.html"];
+const baseFiles=new Set(games.map(g=>g.file.toLowerCase()).concat(DROP)),known=new Set(baseFiles);
+S.bk=S.bk||{};
+S.sy=S.sy||{t:0,f:[]};S.nm=S.nm||{};
+const pretty=f=>{let s=f.replace(/\.html?$/i,'').replace(/^cl(?=[a-z0-9]{3})/,'').replace(/[-_.]+/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Za-z])(\d)/g,'$1 $2').replace(/\s+/g,' ').trim();return s.replace(/\b[a-z]/g,c=>c.toUpperCase())||f};
+const catOf=f=>/eagler/i.test(f)?'Eaglercraft':/fnf|funkin/i.test(f)?'FNF':/flash|swf/i.test(f)?'Flash':'Games';
+const letterOf=n=>{const f=(n.match(/[A-Za-z0-9]/)||['#'])[0].toUpperCase();return/[0-9]/.test(f)?'0-9':f};
+function addGame(file){const k=file.toLowerCase();if(known.has(k))return null;known.add(k);const cat=catOf(file),n=S.nm[file],name=n&&typeof n==='string'?n:pretty(file),g={id:cat+'/'+file,name,file,cat,letter:letterOf(name),syn:1};games.push(g);if(n&&typeof n==='string')vet(g);return g}
+function applySyncCache(){for(const f of S.sy.f)addGame(f)}
+function tidyTitle(t,file){const d=document.createElement('textarea');d.innerHTML=t;let s=d.value.replace(/\s+/g,' ').trim();s=s.replace(/^unity (webgl )?player\s*[|\-–—:]\s*/i,'').replace(/^play\s+/i,'').replace(/\s*[|\-–—:]\s*(?=[^|\-–—:]*\b(play|unblocked|free|online|games?|poki|crazygames|coolmath|kongregate|newgrounds|miniclip|html5|webgl)\b).*$/i,'').replace(/\s+unblocked$/i,'').trim();
+if(!s||s.length>60||/^(document|untitled|index|game|home|loading\.*|redirecting\.*|404.*|not found)$/i.test(s))return pretty(file);return s}
+async function titleOf(file){for(const base of BASES){try{const r=await fetch(base+encodeURIComponent(file));if(!r.ok||!r.body)continue;const rd=r.body.getReader(),dec=new TextDecoder();let t='';while(t.length<40000){const x=await rd.read();if(x.done)break;t+=dec.decode(x.value,{stream:true});const m=t.match(/<title[^>]*>([\s\S]*?)<\/title>/i);if(m){rd.cancel().catch(()=>{});return m[1]}if(/<\/head>|<body/i.test(t))break}rd.cancel().catch(()=>{});return''}catch(e){}}return null}
+/* ---------- vetting: junk names, repeats, blank pages ---------- */
+const W3=new Set('egg tag uno dud xor cat dog car bus ant bee box run war bow ice fox pig sky sun ski zoo gem key map mud net ore pet pop sea spy tap toy web wow zip bat bit dot fly hop jam joy lab mix owl pin pit rat red rod saw tin top tub yes you zen age air all arc art ash bar bay bed big bin bog bud cap cop cow cub cup cut day den dig dim dip dry ear eat end eye fan far fat fin fit fix fog fun gap gas gun gym hat hit hot hub hug ink inn jet job jug kid kit lap law leg lid lip log low mad man mat men mop new nut oak oil old one out pad pan paw pay pea pen pie pot pub raw ray rim rip row rub sad sat set sew shy sin sit six spa sub tea ten tip toe tug two van war wet win wit yak yet zap'.split(' '));
+const junkName=n=>{const a=n.replace(/[^A-Za-z0-9]/g,'');return a.length<=3&&/^[A-Za-z]+$/.test(a)&&!W3.has(a.toLowerCase())};
+const dkey=n=>n.toLowerCase().replace(/\([^)]*\)|\[[^\]]*\]/g,' ').replace(/\b(unblocked|online|the)\b/g,' ').replace(/[^a-z0-9]/g,'');
+const seenK=new Map();for(const g of games)if(!seenK.has(dkey(g.name)))seenK.set(dkey(g.name),g);
+function vet(g){if(!g.syn||g.hide)return;if(junkName(g.name)){g.hide=1;return}const k=dkey(g.name),f=seenK.get(k);if(k&&f&&f!==g)g.hide=1;else if(k)seenK.set(k,g)}
+/* a game whose file is empty, or that just sends you to about:blank, is not a playable game */
+const BLANKRE=/(?:(?:top|window|document)\.)?location(?:\.href)?\s*=\s*['"]about:blank['"]|location\.(?:replace|assign)\(\s*['"]about:blank|http-equiv\s*=\s*["']?refresh[^>]*about:blank/i;
+function isBlank(t,done){if(BLANKRE.test(t))return true;if(!done)return false;const b=t.replace(/<!--[\s\S]*?-->/g,'').replace(/\s+/g,' ');if(b.length<420&&!/<(canvas|script[^>]+src|embed|object|video)\b/i.test(b)&&!/<iframe[^>]+src\s*=\s*["']https?:/i.test(b))return true;return false}
+async function peek(file,max){for(const base of BASES){try{const r=await fetch(base+encodeURIComponent(file));if(!r.ok||!r.body)continue;const rd=r.body.getReader(),dec=new TextDecoder();let t='',done=false;while(t.length<max){const x=await rd.read();if(x.done){done=true;break}t+=dec.decode(x.value,{stream:true})}if(!done)rd.cancel().catch(()=>{});return{t,done}}catch(e){}}return null}
+let scanB=0;
+async function scanBlank(){if(scanB)return;scanB=1;try{const todo=games.filter(g=>S.bk[g.file]===undefined);let i=0,n=0,hit=0;toast('Checking '+todo.length+' games for blank pages…');
+await Promise.all(Array.from({length:4},async()=>{while(1){const g=todo[i++];if(!g)break;const r=await peek(g.file,24000);if(!r)continue;const b=isBlank(r.t,r.done);S.bk[g.file]=b?1:0;if(b)hit++;if(++n%40===0){save();if(hit)syncRelist()}}}));save();syncRelist();toast(hit?('Removed '+hit+' blank game'+(hit===1?'':'s')):'No blank games found')}finally{scanB=0}}
+let srT=0;function syncRelist(){if(srT)return;srT=setTimeout(function f(){srT=0;if(dragging||Date.now()-lastAct<1500||$('player').classList.contains('open')){srT=setTimeout(f,1500);return}relist();$('cnt').textContent=games.length+' games'},3000)}
+let naming=0;
+/* real names for the new files: read each file's <title> (first few KB only) and remember it */
+async function nameNew(){if(naming)return;naming=1;try{const todo=games.filter(g=>g.syn&&(S.nm[g.file]===undefined||S.bk[g.file]===undefined));let i=0,n=0;
+await Promise.all(Array.from({length:4},async()=>{while(1){const g=todo[i++];if(!g)break;const r=await peek(g.file,24000);if(!r)continue;
+if(S.bk[g.file]===undefined)S.bk[g.file]=isBlank(r.t,r.done)?1:0;
+if(S.nm[g.file]===undefined){const m=r.t.match(/<title[^>]*>([\s\S]*?)<\/title>/i),nm=m&&m[1].trim()?tidyTitle(m[1],g.file):pretty(g.file);S.nm[g.file]=nm===pretty(g.file)?0:nm;if(nm!==g.name){g.name=nm;g.letter=letterOf(nm)}if(S.nm[g.file])vet(g)}
+if(++n%25===0){save();syncRelist()}}}));save();if(n)syncRelist()}finally{naming=0}}
+async function listRepo(){const tries=[
+async()=>{const r=await fetch(REPO_TREE);if(!r.ok)throw 0;const j=await r.json();if(!j.tree)throw 0;return j.tree.filter(x=>x.type==='blob').map(x=>x.path)},
+async()=>{for(const v of['main','master']){try{const r=await fetch('https://data.jsdelivr.com/v1/packages/gh/bubbls/ugs-singlefile@'+v+'?structure=flat');if(!r.ok)continue;const j=await r.json();if(j.files)return j.files.map(x=>x.name.replace(/^\//,''))}catch(e){}}throw 0},
+async()=>{const j=await viaPx(REPO_TREE);if(!j.tree)throw 0;return j.tree.filter(x=>x.type==='blob').map(x=>x.path)}];
+for(const t of tries){try{const p=await t();const f=p.filter(x=>x.startsWith(REPO_DIR)).map(x=>x.slice(REPO_DIR.length)).filter(x=>x&&x.indexOf('/')<0&&/\.html?$/i.test(x)&&!/^index\.html?$/i.test(x));if(f.length)return f}catch(e){}}return null}
+async function syncRemote(force){if(!force&&Date.now()-S.sy.t<18e5&&S.sy.f.length){nameNew();return 0}
+const f=await listRepo();if(!f){if(force)toast('Couldn\'t reach the game repository. Try again in a bit.');nameNew();return 0}
+const fresh=f.filter(x=>!baseFiles.has(x.toLowerCase()));S.sy={t:Date.now(),f:fresh};save();
+let added=0;for(const x of fresh)if(addGame(x))added++;
+if(added){$('cnt').textContent=games.length+' games';syncRelist();toast('Added '+added+' new game'+(added===1?'':'s')+' from the repository')}else if(force)toast('Already up to date. '+games.length+' games.');
+nameNew();return added}
+function layTools(box){box.append(seg([['row','Row'],['grid','Grid']],S.lay,k=>{sfx.tog();setLayout(k)}),el('div','hint','Row: the sliding carousel. Grid: every game laid out like the Xbox library, scrolling down. Switching slides the games into place.'))}
+function libTools(box){const b=el('button','mini','Sync games now');b.onclick=async()=>{b.disabled=true;b.textContent='Syncing…';sfx.sel();try{await syncRemote(true)}finally{b.disabled=false;b.textContent='Sync games now'}};
+const sb=el('button','mini','Scan for blank games');sb.style.marginTop='6px';sb.style.display='block';sb.onclick=()=>{sfx.sel();scanBlank()};
+const rh=el('button','mini','Restore hidden games');rh.style.marginTop='6px';rh.style.display='block';rh.onclick=()=>{S.bk={};for(const g of games)if(g.syn)delete g.hide;seenK.clear();for(const g of games){if(g.syn)delete g.hide;const k=dkey(g.name);if(!seenK.has(k))seenK.set(k,g)}save();sfx.sel();syncRelist();toast('Blank-page results cleared. Scan again any time.')};
+const rn=el('button','mini','Re-read game names');rn.style.marginTop='6px';rn.style.display='block';rn.onclick=()=>{for(const g of games)if(g.syn)delete S.nm[g.file];save();sfx.sel();nameNew();toast('Reading names of synced games…')};
+box.append(b,sb,rh,rn,el('div','hint','Games that are empty or just send you to about:blank are hidden, as are repeats and junk names. Every game file in github.com/bubbls/ugs-singlefile (UGS-Files) is added automatically on load, and checked again every 30 minutes. Files already in your list are skipped.'))}
+applySyncCache();
+['click','pointerup'].forEach(t=>$('side').addEventListener(t,()=>{inSide=1;setTimeout(()=>{inSide=0},0)},true));
+document.body.classList.toggle('gm',S.lay==='grid');geoVars();
+applyName();applyPerf();buildNav();buildDock();buildSide();dockLabel();refresh();buildRec();$('cnt').textContent=games.length+' games';boot();syncRemote();
+</script>
+</body>
+</html>
